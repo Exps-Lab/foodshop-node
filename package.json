@@ -1,0 +1,23 @@
+{
+  "name": "exp-express",
+  "version": "1.0.0",
+  "description": "this is a demo project using express",
+  "main": "index.js",
+  "scripts": {
+    "start": "supervisor -p 2000 index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mongoose": "^6.2.8"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "supervisor": "^0.12.0"
+  }
+}
