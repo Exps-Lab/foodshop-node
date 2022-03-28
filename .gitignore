@@ -9,17 +9,8 @@ logs/
 .vscode
 *.swp
 *.lock
-*.js
-!.autod.conf.js
 .dist/
 dist/
 typings/
 .typings/
 package-lock.json
-
-app/**/*.js
-test/**/*.js
-config/**/*.js
-app/**/*.map
-test/**/*.map
-config/**/*.map
