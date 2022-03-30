@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const RouterMap  =  require('./app/router/index')
-const { handleErr,  handleCros } = require('./app/middleware')
+const { handleErr,  handleCros, handleReqLog } = require('./app/middleware')
 require('./mongoDB/index')
 // 加载全局方法
 require('./app/global')
@@ -11,6 +11,7 @@ app.use(handleCros)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(handleErr)
+app.use(handleReqLog)
 
 // 加载路由模块
 RouterMap(app)

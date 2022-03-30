@@ -11,7 +11,7 @@ class Logger {
     error: 'ERROR',
   }
   constructor(type) {
-    this.logPath = config.logger[type || 'web']
+    this.logPath = config.customLogger.path[type || 'web']
   }
   debug (errMes, errInfo) {
     this.writeLog({
