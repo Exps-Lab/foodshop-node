@@ -1,3 +1,4 @@
+const Parameter = require('parameter');
 
 /**
    * 处理业务接口返回
@@ -51,7 +52,17 @@ function formatTime (fmt) {
   return fmt;
 }
 
+// 验证请求参数
+function validate (rule={}, req) {
+  const data = req.method === 'GET' ? req.query : req.body
+  let validateResult = new Parameter().validate(rule, data)
+  if (validateResult !== undefined) {
+    throw new Error(validateResult)
+  }
+}
+
 module.exports = {
   handleResponse,
-  formatTime
+  formatTime,
+  validate,
 } 
