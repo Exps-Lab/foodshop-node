@@ -19,6 +19,7 @@
       stime: stime || new Date().getTime(),
     },
   };
+  // _ctx.logger.error(_ctx.catchReq)
   if (type === 'failed') {
     // todo  处理错误日志写入
     // this.ctx.logger.error(msg || '[BAD_REQUEST]', errMes);

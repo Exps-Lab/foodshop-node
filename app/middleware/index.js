@@ -1,4 +1,5 @@
 const handleCros  =  require('./cros')
+const handleCatchReq = require('./catchReq')
 
 const getNowTime = (options) => {
   return (req, res, next) => {
@@ -21,4 +22,5 @@ module.exports = {
   getNowTime,
   handleErr,
   handleCros,
+  handleCatchReq
 }
