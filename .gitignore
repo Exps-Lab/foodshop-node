@@ -4,13 +4,8 @@ node_modules/
 coverage/
 .idea/
 run/
-logs/
 .DS_Store
 .vscode
 *.swp
 *.lock
-.dist/
-dist/
-typings/
-.typings/
 package-lock.json

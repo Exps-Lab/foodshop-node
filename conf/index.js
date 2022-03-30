@@ -7,7 +7,13 @@ CommonConf.mongoose = {
     useUnifiedTopology: true,
     useFindAndModify: false,
   }
-};
+}
+
+CommonConf.logger = {
+  web: './logs/web/',
+  app: './logs/app/',
+  db:  './logs/db/'
+}
 
 module.exports = CommonConf
 

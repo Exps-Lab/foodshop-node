@@ -1,4 +1,3 @@
-const { handleResponse } = require('../helper/index')
 const TestService = require('../service/test')
 
 class TestControler {
