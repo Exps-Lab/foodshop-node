@@ -1,3 +1,5 @@
+const MongoStore = require('connect-mongo')
+
 const CommonConf = {}
 
 // mongoose配置
@@ -44,6 +46,21 @@ CommonConf.customLogger = {
       return log
     },
   }
+};
+
+// session配置
+CommonConf.sessionConf = {
+  secret: 'mySecret',
+  resave: true,
+  name: 'sessionId',
+  cookie: {
+    secure: false,
+    // 默认null，浏览器关闭就自动无效
+    maxAge: 5000,
+  },
+  store: MongoStore.create({
+    mongoUrl: CommonConf.mongoose.url
+  })
 };
 
 module.exports = CommonConf

@@ -4,8 +4,6 @@ const TestControler = require('../controler/test')
 
 router.get('/a', TestControler.showTest)
 
-router.get('/b', function (req, res) {
-  res.send('About testRouter b page')
-})
+router.get('/b', TestControler.sessionDemo)
 
 module.exports = router
