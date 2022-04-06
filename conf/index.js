@@ -29,7 +29,7 @@ CommonConf.customLogger = {
         class: '',
         line: '',
         req_id: '',
-        req_url: meta.url,
+        req_url: meta.originalUrl,
         req_ip: meta.ip,
         req_body: meta.body,
         req_params: meta.query,

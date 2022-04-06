@@ -1,3 +1,4 @@
+var Parameter = require('parameter');
 
 /**
    * 处理业务接口返回
@@ -20,8 +21,8 @@
     },
   };
   if (type === 'failed') {
-    // todo  处理错误日志写入
-    // this.ctx.logger.error(msg || '[BAD_REQUEST]', errMes);
+    // 处理错误日志写入
+    _common.WebLogger.error(msg || '[BAD_REQUEST]', errMes);
   }
   return responseConf[type] || {};
 }
@@ -51,7 +52,17 @@ function formatTime (fmt) {
   return fmt;
 }
 
+// 参数格式校验
+function validateParam (rule, req) {
+  const data = req.method === 'GET' ? req.query : req.body
+  const errors = new Parameter().validate(rule, data)
+  if (errors) {
+    throw new Error(JSON.stringify(errors))
+  }
+}
+
 module.exports = {
   handleResponse,
-  formatTime
+  formatTime,
+  validateParam
 } 
