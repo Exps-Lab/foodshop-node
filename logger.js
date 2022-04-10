@@ -42,7 +42,7 @@ class Logger {
     })
   }
   async writeLog (data) {
-    const maxStayDay = 1
+    const maxStayDay = 10
     const { level, errMes, errInfo } = data
     const path = join(__dirname, this.logPath)
     const tempFileName = `${path}logs.log`
@@ -58,7 +58,7 @@ class Logger {
         } else {
           await readdir(path).then(async dirFile => {
             if (dirFile.length >= maxStayDay) {
-              await rm(dirFile[dirFile.length -1])
+              await rm(path + dirFile[dirFile.length -1])
             }
             await rename(tempFileName, `${tempFileName}_${timeFormat}`)
             await writeFile(tempFileName, content)
