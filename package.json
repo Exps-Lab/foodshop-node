@@ -18,6 +18,7 @@
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "mongoose": "^6.2.8",
+    "mongoose-sequence": "^5.3.1",
     "parameter": "^3.6.0"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 // testRouter 路由模块
 const testRouter  = require('./test')
+const MainUserRouter = require('./main-user/index')
 
 module.exports =  (app)  => {
   // 默认访问
@@ -10,4 +11,5 @@ module.exports =  (app)  => {
   })
   
   app.use('/test', testRouter)
+  app.use('/main-user', MainUserRouter)
 }

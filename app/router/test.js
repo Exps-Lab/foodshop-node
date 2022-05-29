@@ -6,6 +6,4 @@ router.get('/a', TestControler.showTest)
 
 router.get('/b', TestControler.sessionDemo)
 
-router.get('/auth', TestControler.authDemo)
-
 module.exports = router
