@@ -62,7 +62,7 @@ function autoEnhanceIndexPlugin (schema, options) {
       AutoIncModel.create({
         model: settings.model,
         field: settings.field,
-        count: settings.start
+        count: settings.start - settings.incBy
       });
     }
   });

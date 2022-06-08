@@ -51,12 +51,12 @@ CommonConf.customLogger = {
 // session配置
 CommonConf.sessionConf = {
   secret: 'mySecret',
-  resave: true,
-  name: 'sessionId',
+  saveUninitialized: true,
+  name: 'userSessionId',
   cookie: {
     secure: false,
     // 默认null，浏览器关闭就自动无效
-    maxAge: 5000,
+    maxAge: 50 * 1000,
   },
   store: MongoStore.create({
     mongoUrl: CommonConf.mongoose.url
