@@ -17,7 +17,6 @@ const UserSchema = new Schema({
   role_name: String,
   avatar: String,
   c_time: Number,
-  city: String,
 })
 
 // 注册插件

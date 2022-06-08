@@ -54,10 +54,11 @@ CommonConf.sessionConf = {
     secret: 'userSecret',
     resave: true,
     name: 'userSessionId',
+    saveUninitialized: false,
     cookie: {
       secure: false,
       // 默认null，浏览器关闭就自动无效
-      maxAge: 5000,
+      maxAge: 150 * 1000,
     },
     store: MongoStore.create({
       mongoUrl: CommonConf.mongoose.url
@@ -67,10 +68,11 @@ CommonConf.sessionConf = {
     secret: 'adminSecret',
     resave: true,
     name: 'adminSessionId',
+    saveUninitialized: false,
     cookie: {
       secure: false,
       // 默认null，浏览器关闭就自动无效
-      maxAge: 10 * 1000,
+      maxAge: 150 * 1000,
     },
     store: MongoStore.create({
       mongoUrl: CommonConf.mongoose.url

@@ -1,51 +1,61 @@
 const AdminModel  = require('../../model/admin/login')
 
 class AdminLoginService {
-  async login(req, res) {
-    const { username } = req.body
-    const roleConf = {
-      'super': {
-        role: 1,
-        roleName: '超管',
-      },
-      'user': {
-        role: 2,
-        roleName: '普通用户',
-      }
-    }
-    const comData = {
-      username,
-      ctime: Date.now(),
-      role: roleConf.user.role,
-      roleName: roleConf.user.roleName,
-    }
-
-    const [ resData ] = await AdminModel.find({ username }).lean(true)
-    if (resData) {
-      this.checkUser(req, res, resData, comData)
-    } else {
-      this.addUser(req, res, comData)
+  roleConf = {
+    'super': {
+      role: 1,
+      role_name: '超管',
+    },
+    'user': {
+      role: 2,
+      role_name: '普通用户',
     }
   }
-  addUser (req, res, comData) {
-    const { password } = req.body
-
+  async login(req, res) {
+    const { username } = req.body
+    const [ resData ] = await AdminModel.find({ username })
+  
+    if (resData) {
+      this.checkUser(req, res, resData)
+    } else {
+      this.addUser(req, res)
+    }
+  }
+  addUser (req, res) {
+    const { username, password } = req.body
+    // 先控制用页面入口添加的都是用户
+    const { role, role_name } = this.roleConf['user']
+    const comData = {
+      username,
+      role,
+      role_name,
+      c_time: Date.now(),
+    }
+    
     AdminModel.create({
       ...comData,
       password,
     }).then(data => {
+      req.session.username = username
+
       res.json(_common.handleResponse({
         data: comData,
         msg: 'login success'
       }));
     })
   }
-  checkUser (req, res, resData, comData) {
-     const { password } = req.body
+  checkUser (req, res, resData) {
+    const { password } = req.body
+    const { username, role, role_name, c_time } = resData
 
     if (password === resData.password) {
       res.json(_common.handleResponse({
-        data: comData,
+        data: {
+          username,
+          role,
+          role_name,
+          c_time
+        },
         msg: 'login success'
       }));
     } else {
