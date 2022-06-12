@@ -11,10 +11,11 @@ class AdminLoginService {
       role_name: '普通用户',
     }
   }
+  
   async login(req, res) {
     const { username } = req.body
     const [ resData ] = await AdminModel.find({ username })
-  
+
     if (resData) {
       this.checkUser(req, res, resData)
     } else {
@@ -31,13 +32,12 @@ class AdminLoginService {
       role_name,
       c_time: Date.now(),
     }
-    
+
     AdminModel.create({
       ...comData,
       password,
     }).then(data => {
       req.session.username = username
-
       res.json(_common.handleResponse({
         data: comData,
         msg: 'login success'
@@ -49,6 +49,7 @@ class AdminLoginService {
     const { username, role, role_name, c_time } = resData
 
     if (password === resData.password) {
+      req.session.username = username
       res.json(_common.handleResponse({
         data: {
           username,
@@ -66,6 +67,14 @@ class AdminLoginService {
         msg: '用户名或密码错误，请重试！'
       }));
     }
+  }
+
+  logout (req, res) {
+    req.session.destroy()
+    res.json(_common.handleResponse({
+      data: null,
+      msg: 'logout success'
+    }));
   }
 }
 

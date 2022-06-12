@@ -58,7 +58,8 @@ CommonConf.sessionConf = {
     cookie: {
       secure: false,
       // 默认null，浏览器关闭就自动无效
-      maxAge: 150 * 1000,
+      maxAge: 15 * (24*60*60*1000),
+      httpOnly: false,
     },
     store: MongoStore.create({
       mongoUrl: CommonConf.mongoose.url
@@ -72,7 +73,8 @@ CommonConf.sessionConf = {
     cookie: {
       secure: false,
       // 默认null，浏览器关闭就自动无效
-      maxAge: 150 * 1000,
+      maxAge: 15 * (24*60*60*1000),
+      httpOnly: false,
     },
     store: MongoStore.create({
       mongoUrl: CommonConf.mongoose.url

@@ -18,6 +18,9 @@ class AdminControler {
     }
     LoginService.login(req, res)
   }
+  logout (req, res) {
+    LoginService.logout(req, res)
+  }
 }
 
 module.exports = new AdminControler()
