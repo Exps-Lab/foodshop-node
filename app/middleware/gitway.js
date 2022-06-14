@@ -1,3 +1,5 @@
+const { sessionConf } = require('../../conf/index')
+
 // 处理请求跨域
 const handleCros = (req, res, next) => {
   const { origin, Origin, referer, Referer } = req.headers;
@@ -17,13 +19,9 @@ const handleCros = (req, res, next) => {
 
 // session拦截校验
 const handleSession = (req, res, next) => {
-  const sessionMap = {
-    'main-user': 'userSessionId',
-    'admin': 'adminSessionId'
-  }
   const { path, sessionID, cookies } = req
   const moduleName = path.split('/')[1]
-  const sessionKey = sessionMap[moduleName]
+  const sessionKey = sessionConf[moduleName].name
   const cookie = cookies[sessionKey]?.split(/[:.]/)[1]
 
   if (path.includes('auth') && sessionID !== cookie) {

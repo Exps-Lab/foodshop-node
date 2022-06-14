@@ -13,8 +13,8 @@ require('./app/global')
 
 // 加载中间件
 app.use(cookieParser())
-app.use('/admin', session(sessionConf.admin))
-app.use('/main-user', session(sessionConf.user))
+app.use('/admin', session(sessionConf['admin']))
+app.use('/main-user', session(sessionConf['main-user']))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(handleCros)

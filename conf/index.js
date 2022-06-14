@@ -50,7 +50,7 @@ CommonConf.customLogger = {
 
 // session配置
 CommonConf.sessionConf = {
-  user: {
+  'main-user': {
     secret: 'userSecret',
     resave: true,
     name: 'userSessionId',
@@ -65,7 +65,7 @@ CommonConf.sessionConf = {
       mongoUrl: CommonConf.mongoose.url
     })
   },
-  admin: {
+  'admin': {
     secret: 'adminSecret',
     resave: true,
     name: 'adminSessionId',
