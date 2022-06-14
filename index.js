@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const RouterMap  =  require('./app/router/index')
-const { handleErr,  handleCros, handleReqLog } = require('./app/middleware')
+const RouterMap = require('./app/router/index')
+const { handleCros, handleSession, handleReqLog } = require('./app/middleware')
 const { sessionConf } = require('./conf/index')
 
 // 加载数据库配置
@@ -15,10 +15,10 @@ require('./app/global')
 app.use(cookieParser())
 app.use('/admin', session(sessionConf.admin))
 app.use('/main-user', session(sessionConf.user))
-app.use(handleCros)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(handleErr)
+app.use(handleCros)
+app.use(handleSession)
 app.use(handleReqLog)
 
 // 加载路由模块

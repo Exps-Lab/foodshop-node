@@ -1,13 +1,8 @@
-const handleCros  =  require('./cros')
+const { handleCros, handleSession } = require('./gitway')
 const handleReqLog = require('./reqLog')
 
-const handleErr = (err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
-}
-
 module.exports = {
-  handleErr,
   handleCros,
-  handleReqLog,
+  handleSession,
+  handleReqLog
 }
