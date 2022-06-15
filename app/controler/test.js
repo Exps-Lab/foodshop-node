@@ -5,15 +5,14 @@ class TestControler {
     try {
       _common.validate({
         name: 'string',
-      }, req);
+      }, req)
     } catch (err) {
-      res.json(_common.handleResponse({
-        data: null,
-        type: 'failed',
+      res.json({
+        code: 0,
         msg: '[Request Params Error]',
-        errMes: err,
-      }));
-      return;
+        errLog: err,
+      })
+      return
     }
     TestService.showTest(req, res)
   }
@@ -21,10 +20,10 @@ class TestControler {
   sessionDemo (req, res) {
     let { counter } = req.session;
     if (!counter) {
-      req.session.counter = 1;
+      req.session.counter = 1
       res.end('welcome to the session demo. try to refresh this page!')
     } else {
-      req.session.counter += 1;
+      req.session.counter += 1
       res.setHeader('Content-Type', 'text/html')
       res.write('<p>views: ' + req.session.counter + '</p>')
       res.write('<p>session expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')

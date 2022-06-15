@@ -38,10 +38,10 @@ class AdminLoginService {
       password,
     }).then(data => {
       req.session.username = username
-      res.json(_common.handleResponse({
+      res.json({
         data: comData,
         msg: 'login success'
-      }));
+      })
     })
   }
   checkUser (req, res, resData) {
@@ -50,7 +50,7 @@ class AdminLoginService {
 
     if (password === resData.password) {
       req.session.username = username
-      res.json(_common.handleResponse({
+      res.json({
         data: {
           username,
           role,
@@ -58,23 +58,20 @@ class AdminLoginService {
           c_time
         },
         msg: 'login success'
-      }));
+      })
     } else {
-      res.json(_common.handleResponse({
-        errCode: 10001,
-        type: 'failed',
-        data: null,
+      res.json({
+        code: 20001,
         msg: '用户名或密码错误，请重试！'
-      }));
+      })
     }
   }
 
   logout (req, res) {
     req.session.destroy()
-    res.json(_common.handleResponse({
-      data: null,
+    res.json({
       msg: 'logout success'
-    }));
+    })
   }
 }
 

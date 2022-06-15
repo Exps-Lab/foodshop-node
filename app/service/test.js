@@ -6,9 +6,9 @@ class TestService {
     if (!query.length) {
       const model = new modelKyVideo({ voteNum: 10000 });
       const saveData = await model.save();
-      res.json(_common.handleResponse({ data: saveData }))
+      res.json({ data: saveData })
     }
-    res.json(_common.handleResponse({ data: query[0] }))
+    res.json({ data: query[0] })
   }
 }
 

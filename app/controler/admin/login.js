@@ -8,12 +8,11 @@ class AdminControler {
         password: 'string',
       }, req)
     } catch (err) {
-      res.json(_common.handleResponse({
-        data: null,
-        type: 'failed',
+      res.json({
+        code: 10001,
         msg: '[Request Params Error]',
-        errMes: err,
-      }));
+        errLog: err,
+      })
       return
     }
     LoginService.login(req, res)

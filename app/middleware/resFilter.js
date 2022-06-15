@@ -15,7 +15,7 @@ const handleReqLog = async (req, res, next) => {
 const handleResponse = (req, res, next) => {
   const _send = res.json
   res.json = function (params) {
-    const { data = null, msg, errMes, code = 1 } = params
+    const { code = 1, data = null, msg, errLog } = params
     if (code === 1) {
       // 请求成功响应
       params = {
@@ -27,13 +27,13 @@ const handleResponse = (req, res, next) => {
     } else {
       // 请求失败响应
       params = {
-        code: code || 0,
+        code: code,
         msg: msg || 'failed',
         data,
         stime: new Date().getTime()
       }
       // 处理错误日志写入
-      _common.WebLogger.error(msg || '[BAD_REQUEST]', errMes);
+      _common.WebLogger.error(msg || '[BAD_REQUEST]', errLog);
     }
     _send.call(res, params)
   }
