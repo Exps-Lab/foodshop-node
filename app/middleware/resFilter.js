@@ -9,11 +9,17 @@ const handleReqLog = async (req, res, next) => {
 }
 
 /**
- * 处理业务接口返回
- * @param {*} params 业务返回参数，code默认不传或等于1为请求成功，否则为请求失败
+ * 统一处理业务接口返回
+ * params业务返回参数
+ *  code 默认不传或等于1为请求成功，否则为请求失败
+ *  data 返回数据，默认null
+ *  msg  返回信息
+ *  errLog 错误具体信息，仅供打点使用
  */
 const handleResponse = (req, res, next) => {
   const _send = res.json
+
+  // 重写res.json方法，拦截返回数据
   res.json = function (params) {
     const { code = 1, data = null, msg, errLog } = params
     if (code === 1) {

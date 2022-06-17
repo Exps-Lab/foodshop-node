@@ -1,6 +1,6 @@
 const TestService = require('../service/test')
 
-class TestControler {
+class TestController {
   showTest (req, res) {
     try {
       _common.validate({
@@ -32,4 +32,4 @@ class TestControler {
   }
 }
 
-module.exports = new TestControler()
+module.exports = new TestController()

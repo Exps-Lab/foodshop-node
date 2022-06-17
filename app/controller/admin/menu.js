@@ -1,6 +1,6 @@
 const MenuService = require('../../service/admin/menu')
 
-class MenuControler {
+class MenuController {
   menuList (req, res) {
     MenuService.menuList(req, res)
   }
@@ -73,4 +73,4 @@ class MenuControler {
   }
 }
 
-module.exports = new MenuControler()
+module.exports = new MenuController()

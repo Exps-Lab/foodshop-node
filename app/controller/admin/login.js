@@ -1,6 +1,6 @@
 const LoginService = require('../../service/admin/login')
 
-class AdminControler {
+class AdminController {
   login (req, res) {
     try {
       _common.validate({
@@ -22,4 +22,4 @@ class AdminControler {
   }
 }
 
-module.exports = new AdminControler()
+module.exports = new AdminController()

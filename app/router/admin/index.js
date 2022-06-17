@@ -1,16 +1,21 @@
 const express = require('express')
 const router = express.Router()
-const LoginControler = require('../../controler/admin/login')
-const MenuControler = require('../../controler/admin/menu')
+const LoginController = require('../../controller/admin/login')
+const MenuController = require('../../controller/admin/menu')
+const RoleController = require('../../controller/admin/role')
+
+// 角色列表
+router.get('/noauth/getRoleList', RoleController.getRoleList)
 
 // 登录&登出
-router.post('/noauth/login', LoginControler.login)
-router.post('/noauth/logout', LoginControler.logout)
+router.post('/noauth/login', LoginController.login)
+router.post('/noauth/logout', LoginController.logout)
+
 // 菜单管理
-router.get('/auth/getMenuList', MenuControler.menuList)
-router.get('/auth/getMenuDetail', MenuControler.menuDetail)
-router.post('/auth/addMenu', MenuControler.addMenu)
-router.post('/auth/updateMenu', MenuControler.updateMenu)
-router.post('/auth/deleteMenu', MenuControler.deleteMenu)
+router.get('/auth/getMenuList', MenuController.menuList)
+router.get('/auth/getMenuDetail', MenuController.menuDetail)
+router.post('/auth/addMenu', MenuController.addMenu)
+router.post('/auth/updateMenu', MenuController.updateMenu)
+router.post('/auth/deleteMenu', MenuController.deleteMenu)
 
 module.exports = router

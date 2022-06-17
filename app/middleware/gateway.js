@@ -10,7 +10,7 @@ const handleCros = (req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
 	res.header("X-Powered-By", 'Express');
 
-	if (req.method == 'OPTIONS') {
+	if (req.method === 'OPTIONS') {
   	res.sendStatus(200);
 	} else {
     next();
@@ -21,6 +21,9 @@ const handleCros = (req, res, next) => {
 const handleSession = (req, res, next) => {
   const { path, sessionID, cookies } = req
   const moduleName = path.split('/')[1]
+  // console.log(sessionConf)
+  // console.log(moduleName)
+  console.log(sessionConf[moduleName])
   const sessionKey = sessionConf[moduleName].name
   const cookie = cookies[sessionKey]?.split(/[:.]/)[1]
 

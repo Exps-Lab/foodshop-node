@@ -1,6 +1,6 @@
 const LoginService = require('../../service/main-user/login')
 
-class MainUserControler {
+class MainUserController {
   // 401 auth 用户名密码校验测试
   // 写死 用户名：test 密码：test
   authDemo (req, res) {
@@ -26,4 +26,4 @@ class MainUserControler {
   }
 }
 
-module.exports = new MainUserControler()
+module.exports = new MainUserController()
