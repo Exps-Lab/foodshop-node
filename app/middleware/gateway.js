@@ -21,10 +21,7 @@ const handleCros = (req, res, next) => {
 const handleSession = (req, res, next) => {
   const { path, sessionID, cookies } = req
   const moduleName = path.split('/')[1]
-  // console.log(sessionConf)
-  // console.log(moduleName)
-  console.log(sessionConf[moduleName])
-  const sessionKey = sessionConf[moduleName].name
+  const sessionKey = sessionConf[moduleName]?.name
   const cookie = cookies[sessionKey]?.split(/[:.]/)[1]
 
   if (path.includes('/auth/') && sessionID !== cookie) {
