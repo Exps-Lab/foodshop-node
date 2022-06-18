@@ -13,7 +13,8 @@ const MenuSchema = new Schema({
   },
   role: {
     type: Number,
-    required: true
+    required: true,
+    ref: 'role'
   },
   icon: String,
   children: String

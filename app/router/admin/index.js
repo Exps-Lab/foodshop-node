@@ -3,6 +3,10 @@ const router = express.Router()
 const LoginController = require('../../controller/admin/login')
 const MenuController = require('../../controller/admin/menu')
 const RoleController = require('../../controller/admin/role')
+const CommonInfoController = require('../../controller/admin/common')
+
+// common
+router.get('/auth/commonInfo', CommonInfoController.getCommonInfo)
 
 // 角色列表
 router.get('/noauth/getRoleList', RoleController.getRoleList)

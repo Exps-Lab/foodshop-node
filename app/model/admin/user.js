@@ -20,5 +20,5 @@ const UserSchema = new Schema({
 })
 
 // 注册插件
-UserSchema.plugin(AutoEnhanceIndexPlugin, { model: 'admin', field: 'u_id' })
-module.exports = mongoose.model('admin', UserSchema, 'admin');
+UserSchema.plugin(AutoEnhanceIndexPlugin, { model: 'admin_user', field: 'u_id' })
+module.exports = mongoose.model('admin_user', UserSchema, 'admin_user');

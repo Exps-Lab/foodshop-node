@@ -4,13 +4,34 @@ class MenuService {
   async menuList (req, res) {
     let query = req.query
     try {
-      const data = await MenuModel.find().lean(true)
+      // const data = await MenuModel.find().lean(true)
+      // data.forEach(item => {
+      //   item.children = JSON.parse(item.children)
+      // })
+      const data = await MenuModel.aggregate([
+      {
+        $lookup: {
+          from: 'role',
+          localField: 'role',
+          foreignField: 'role',
+          as: 'rName',
+        }
+      }, {
+        $unwind: '$rName'
+      }, {
+        $addFields: { role_name: '$rName.role_name' }
+      }, {
+        $project: {
+          _id: 0,
+          __v: 0,
+          rName: 0
+        }
+      }])
       data.forEach(item => {
         item.children = JSON.parse(item.children)
       })
       res.json({
         data,
-        msg: '保存成功'
       })
     } catch (err) {
       res.json({

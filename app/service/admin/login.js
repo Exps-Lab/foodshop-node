@@ -1,4 +1,4 @@
-const AdminModel  = require('../../model/admin/login')
+const UserModel  = require('../../model/admin/user')
 
 class AdminLoginService {
   roleConf = {
@@ -11,10 +11,10 @@ class AdminLoginService {
       role_name: '普通用户',
     }
   }
-  
+
   async login(req, res) {
     const { username } = req.body
-    const [ resData ] = await AdminModel.find({ username })
+    const [ resData ] = await UserModel.find({ username })
 
     if (resData) {
       this.checkUser(req, res, resData)
@@ -33,7 +33,7 @@ class AdminLoginService {
       c_time: Date.now(),
     }
 
-    AdminModel.create({
+    UserModel.create({
       ...comData,
       password,
     }).then(data => {
