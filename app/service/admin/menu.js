@@ -4,10 +4,6 @@ class MenuService {
   async menuList (req, res) {
     let query = req.query
     try {
-      // const data = await MenuModel.find().lean(true)
-      // data.forEach(item => {
-      //   item.children = JSON.parse(item.children)
-      // })
       const data = await MenuModel.aggregate([
       {
         $lookup: {
@@ -28,7 +24,9 @@ class MenuService {
         }
       }])
       data.forEach(item => {
-        item.children = JSON.parse(item.children)
+        if (item.children) {
+          item.children = JSON.parse(item.children)
+        }
       })
       res.json({
         data,

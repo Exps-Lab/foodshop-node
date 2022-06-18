@@ -6,7 +6,7 @@ const RoleController = require('../../controller/admin/role')
 const CommonInfoController = require('../../controller/admin/common')
 
 // common
-router.get('/auth/commonInfo', CommonInfoController.getCommonInfo)
+router.get('/auth/getCommonInfo', CommonInfoController.getCommonInfo)
 
 // 角色列表
 router.get('/noauth/getRoleList', RoleController.getRoleList)

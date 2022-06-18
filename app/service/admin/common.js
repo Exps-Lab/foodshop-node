@@ -1,21 +1,20 @@
 const UserModel  = require('../../model/admin/user')
 const MenuModel  = require('../../model/admin/menu')
 
-class RoleService {
+class CommonInfoService {
   async getCommonInfo(req, res) {
     const username = req.session.username
     const filterConf = '-_id -__v'
-    const staticMenu = {
-
-    }
 
     try {
-      const loginUserInfo = await UserModel.find({ username }, filterConf)
-      const authMenu = await MenuModel.find({ role: loginUserInfo.role }, filterConf)
+      const loginUserInfo = await UserModel.find({ username }, filterConf).lean(true)
+
+      const authMenuFilter = loginUserInfo[0].role === 1 ? {} : { role: loginUserInfo[0].role }
+      const authMenu = await MenuModel.find(authMenuFilter, filterConf)
       res.json({
         data: {
           menuList: authMenu,
-          userInfo: loginUserInfo
+          userInfo: loginUserInfo[0]
         }
       })
     } catch (err) {
@@ -27,4 +26,4 @@ class RoleService {
   }
 }
 
-module.exports = new RoleService()
+module.exports = new CommonInfoService()
