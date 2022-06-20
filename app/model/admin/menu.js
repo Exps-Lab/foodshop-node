@@ -17,6 +17,7 @@ const MenuSchema = new Schema({
     ref: 'role'
   },
   icon: String,
+  is_hidden: Boolean,
   is_default: {
     type: Boolean,
     default: false

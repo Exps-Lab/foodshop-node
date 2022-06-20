@@ -10,7 +10,10 @@ class CommonInfoService {
       const loginUserInfo = await UserModel.find({ username }, filterConf).lean(true)
 
       const authMenuFilter = loginUserInfo[0].role === 1 ? {} : { role: loginUserInfo[0].role }
-      const authMenu = await MenuModel.find(authMenuFilter, filterConf)
+      const authMenu = await MenuModel.find(authMenuFilter, filterConf).lean(true)
+      authMenu.forEach(menu => {
+        menu.children = menu.children ? JSON.parse(menu.children) : []
+      })
       res.json({
         data: {
           menuList: authMenu,
