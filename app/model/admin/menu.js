@@ -32,15 +32,15 @@ const menuModel = mongoose.model('menu', MenuSchema, 'menu')
 const defaultMenuConf = [{
   path: '/menu/index',
   label: '菜单管理',
-  icon: 'list',
+  icon: 'apps',
   role : 1,
   is_default: true
 }, {
   path: '/menu/detail',
   label: '菜单详情',
-  icon: 'apps',
   role : 1,
-  is_default: true
+  is_default: true,
+  is_hidden: true
 }]
 menuModel.find().then(res => {
   if (!res.length) {
