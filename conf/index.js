@@ -82,6 +82,13 @@ CommonConf.sessionConf = {
   }
 };
 
+// 七牛云密钥配置
+CommonConf.qiniuConf = {
+  bucket: 'elm-dev',
+  accessKey: 'rxQBQramPpIBL3SXctbUzJ66UtHQlfrSgykvV6_A',
+  secretKey: '3ZmafmqYFvQW2fe0_JtC0FLl7mjxQ_FRiw-g__1K'
+}
+
 module.exports = CommonConf
 
 

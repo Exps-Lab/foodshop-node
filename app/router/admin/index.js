@@ -7,6 +7,7 @@ const CommonInfoController = require('../../controller/admin/common')
 
 // common
 router.get('/auth/getCommonInfo', CommonInfoController.getCommonInfo)
+router.get('/noauth/uploadToken', CommonInfoController.uploadToken)
 
 // 角色列表
 router.get('/noauth/getRoleList', RoleController.getRoleList)
