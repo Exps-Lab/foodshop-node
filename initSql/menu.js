@@ -4,15 +4,15 @@ const MenuModel = require('../app/model/admin/menu')
 const defaultMenuConf = [{
   path: '/menu/index',
   label: '菜单管理',
-  icon: 'apps',
+  icon: 'list',
   role : 1,
   is_default: true
 }, {
   path: '/menu/detail',
   label: '菜单详情',
+  icon: 'apps',
   role : 1,
-  is_default: true,
-  is_hidden: true
+  is_default: true
 }]
 
 

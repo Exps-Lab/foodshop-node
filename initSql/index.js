@@ -1,11 +1,13 @@
 const initMenu = require('./menu')
 const initRole = require('./role')
 const initUser = require('./user')
+const initCity = require('./city')
 
 const initFn = {
   initMenu,
   initRole,
   initUser,
+  initCity,
 }
 
 module.exports = function init () {
@@ -13,4 +15,3 @@ module.exports = function init () {
     fn.constructor === Function && fn()
   })
 }
-
