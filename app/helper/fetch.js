@@ -31,7 +31,7 @@ async function request (url, data, options) {
   if (data && data.constructor === Object) {
     if (method === 'get') {
       Object.keys(data).forEach((key, index, arr) => {
-        url += `?${key}=${data[key]}${index !== arr.length - 1 && '&'}`
+        url += `${index === 0 ? '?': '&'}${key}=${data[key]}`
       })
     } else if (method === 'post') {
       defaultOptions.body = querystring.stringify(data)

@@ -24,12 +24,9 @@ class TestController extends BasePosClass {
   }
 
   async sessionDemo (req, res) {
-    const text = this.getText()
+    const pos = await this.getCityNameFromIp(req)
     res.json({
-      data: {
-        text,
-        ip: await super.getRemoteAddress()
-      }
+      data: pos
     })
     // let { counter } = req.session;
     // if (!counter) {

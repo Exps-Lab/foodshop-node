@@ -1,4 +1,5 @@
 const Parameter = require('parameter');
+const CtoPin = require('./dictionary')
 
 // 处理时间格式
 Date.prototype.formatTime = formatTime;
@@ -37,4 +38,5 @@ function validate (rule={}, req) {
 module.exports = {
   formatTime,
   validate,
+  CtoPin,
 }
