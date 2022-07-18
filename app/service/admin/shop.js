@@ -24,8 +24,7 @@ class ShopService extends BasePosClass {
         return
       }
       res.json({
-        code: 20003,
-        data: '',
+        code: 20002,
         msg: '未找到您的城市'
       })
     } catch (err) {
@@ -61,6 +60,29 @@ class ShopService extends BasePosClass {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  async shopList (req, res) {
+    const { rn = 10, pn = 1 } = req.query
+    try {
+      let shopData = await ShopModel.find({}, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
+      let count = await ShopModel.count()
+      res.json({
+        data: {
+          list: shopData,
+          total: count,
+          pn,
+          rn
+        }
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -76,6 +98,7 @@ class ShopService extends BasePosClass {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -91,6 +114,7 @@ class ShopService extends BasePosClass {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -106,6 +130,23 @@ class ShopService extends BasePosClass {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  async deleteShop (req, res) {
+    const { id } = req.body
+    try {
+      await ShopModel.findOneAndDelete({ id })
+      res.json({
+        msg: '删除成功'
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
         errLog: err
       })
     }

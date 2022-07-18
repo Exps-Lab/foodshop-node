@@ -116,6 +116,50 @@ class ShopController {
     }
     await ShopService.getDetail(req, res)
   }
+
+  async shopList (req, res) {
+    try {
+      _common.validate({
+        pn: {
+          type: 'number',
+          required: false,
+          convertType: 'number'
+        },
+        rn: {
+          type: 'number',
+          required: false,
+          convertType: 'number'
+        }
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return false
+    }
+    await ShopService.shopList(req, res)
+  }
+
+  async deleteShop (req,res) {
+    try {
+      _common.validate({
+        id: {
+          type: 'number',
+          convertType: 'number'
+        }
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return false
+    }
+    await ShopService.deleteShop(req, res)
+  }
 }
 
 
