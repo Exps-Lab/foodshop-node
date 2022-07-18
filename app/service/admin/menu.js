@@ -2,8 +2,9 @@ const MenuModel = require('../../model/admin/menu')
 
 class MenuService {
   async menuList (req, res) {
-    let query = req.query
+    const { pageNum = 1, pageSize = 10 } = req.query
     try {
+      const count = await MenuModel.count()
       const data = await MenuModel.aggregate([
       {
         $lookup: {
@@ -22,15 +23,21 @@ class MenuService {
           __v: 0,
           rName: 0
         }
+      }, {
+        $skip: (pageNum - 1) * pageSize
+      }, {
+        $limit: pageSize
       }])
       data.forEach(item => {
         item.is_hidden_text = item.is_hidden ? '是' : '否'
-        if (item.children) {
-          item.children = JSON.parse(item.children)
-        }
       })
       res.json({
-        data,
+        data: {
+          pageNum,
+          pageSize,
+          total: count,
+          list: data
+        }
       })
     } catch (err) {
       res.json({
@@ -43,7 +50,6 @@ class MenuService {
     let query = req.query
     try {
       let data = await MenuModel.findOne({id: query.id}).lean(true)
-      data.children = data.children ? JSON.parse(data.children) : []
       res.json({
         data,
         msg: '查询成功'
@@ -57,7 +63,6 @@ class MenuService {
   }
   async addMenu (req, res) {
     let params = req.body
-    params.children = JSON.stringify(params.children)
     try {
       await MenuModel.create(params)
       res.json({
@@ -72,7 +77,6 @@ class MenuService {
   }
   async updateMenu (req, res) {
     let params = req.body
-    params.children = JSON.stringify(params.children)
     try {
       await MenuModel.updateOne({ id: params.id }, params)
       res.json({

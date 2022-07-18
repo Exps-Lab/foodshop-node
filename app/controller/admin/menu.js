@@ -2,6 +2,27 @@ const MenuService = require('../../service/admin/menu')
 
 class MenuController {
   menuList (req, res) {
+    try {
+      _common.validate({
+        pageNum: {
+          type: 'number',
+          convertType: 'number',
+          required: false
+        },
+        pageSize: {
+          type: 'number',
+          convertType: 'number',
+          required: false
+        }
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err
+      })
+      return
+    }
     MenuService.menuList(req, res)
   }
   menuDetail (req, res) {
@@ -24,8 +45,10 @@ class MenuController {
       _common.validate({
         path: 'string',
         label: 'string',
+        icon: 'string?',
         role: 'number',
-        children: 'array'
+        is_hidden: 'boolean',
+        children: 'array?'
       }, req)
     } catch (err) {
       res.json({
@@ -43,8 +66,10 @@ class MenuController {
         id: 'number',
         path: 'string',
         label: 'string',
+        icon: 'string?',
         role: 'number',
-        children: 'array'
+        is_hidden: 'boolean',
+        children: 'array?'
       }, req)
     } catch (err) {
       res.json({

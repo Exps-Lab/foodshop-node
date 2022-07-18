@@ -22,7 +22,7 @@ const MenuSchema = new Schema({
     type: Boolean,
     default: false
   },
-  children: String
+  children: Array
 })
 
 MenuSchema.plugin(AutoEnhanceIndexPlugin, { model: 'menu', field: 'id' })   // 注册自增插件
