@@ -27,5 +27,9 @@ router.post('/auth/deleteMenu', MenuController.deleteMenu)
 // 店铺管理
 router.get('/noauth/place/getCityInfo', ShopController.getCityInfo)
 router.get('/noauth/place/search', ShopController.searchPlace)
+router.get('/noauth/shop/category', ShopController.getCategory)
+router.post('/auth/shop/add', ShopController.addShop)
+router.post('/auth/shop/update', ShopController.updateShop)
+router.get('/auth/shop/detail', ShopController.getDetail)
 
 module.exports = router

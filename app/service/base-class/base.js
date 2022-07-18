@@ -31,14 +31,15 @@ class BasePosClass {
 
   // 检索某一行政区划内的地点信息
   async search (reqQuery) {
-    const { keyword, city_name } = reqQuery
+    const { keyword, city_name, pn } = reqQuery
     const pos = await _common.request('https://apis.map.qq.com/ws/place/v1/search', {
       keyword: encodeURIComponent(keyword),
       boundary: `region(${city_name}, 1)`,
-      page_size: 20,
+      page_size: 10,
+      page_index: pn,
       key: this.txKey
     })
-    return pos.data
+    return pos
   }
 }
 
