@@ -69,7 +69,7 @@ class ShopService extends BasePosClass {
   async shopList (req, res) {
     const { rn = 10, pn = 1 } = req.query
     const admin_uid = req.session.admin_uid
-    const queryObj = await this.getQueryFromUser('admin_user', 'u_id', 'admin_uid', admin_uid)
+    const queryObj = await this.getQueryFromUser('admin_uid', admin_uid)
 
     try {
       let shopData = await ShopModel.find(queryObj, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
