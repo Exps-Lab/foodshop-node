@@ -3,6 +3,10 @@ const { Schema } = mongoose
 const AutoEnhanceIndexPlugin = require('../../plugin/autoEnhanceIndex')
 
 const ShopSchema = new Schema({
+  admin_uid: {
+    type: Number,
+    index: true
+  },
   name: String,
   address: String,
   pos: {

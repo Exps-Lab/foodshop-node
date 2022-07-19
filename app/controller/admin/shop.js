@@ -88,7 +88,11 @@ class ShopController {
   async updateShop (req, res) {
     try {
       _common.validate({
-        id: 'id'
+        id: {
+          type: 'number',
+          covertType: 'number'
+        },
+        ...ShopController.paramsRules
       }, req)
     } catch (err) {
       res.json({

@@ -1,7 +1,7 @@
 const CityModel  = require('../../model/common/city')
 const CategoryModel  = require('../../model/common/category')
 const ShopModel  = require('../../model/admin/shop')
-const BasePosClass = require('../base-class/base')
+const BasePosClass = require('../base-class/pos-base')
 
 class ShopService extends BasePosClass {
   constructor() {
@@ -68,9 +68,12 @@ class ShopService extends BasePosClass {
 
   async shopList (req, res) {
     const { rn = 10, pn = 1 } = req.query
+    const admin_uid = req.session.admin_uid
+    const queryObj = await this.getQueryFromUser('admin_user', 'u_id', 'admin_uid', admin_uid)
+
     try {
-      let shopData = await ShopModel.find({}, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
-      let count = await ShopModel.count()
+      let shopData = await ShopModel.find(queryObj, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
+      let count = await ShopModel.find(queryObj).count()
       res.json({
         data: {
           list: shopData,
@@ -89,7 +92,9 @@ class ShopService extends BasePosClass {
   }
 
   async addShop (req, res) {
+    const admin_uid = req.session.admin_uid
     const data = req.body
+    data.admin_uid = admin_uid
     try {
       await ShopModel.create(data)
       res.json({

@@ -37,7 +37,9 @@ class AdminLoginService {
       ...comData,
       password,
     }).then(data => {
+      const { u_id } = data
       req.session.username = username
+      req.session.admin_uid = u_id
       res.json({
         data: comData,
         msg: 'login success'
@@ -46,10 +48,11 @@ class AdminLoginService {
   }
   checkUser (req, res, resData) {
     const { password } = req.body
-    const { username, role, role_name, c_time } = resData
+    const { username, role, role_name, c_time, u_id } = resData
 
     if (password === resData.password) {
       req.session.username = username
+      req.session.admin_uid = u_id
       res.json({
         data: {
           username,
@@ -62,7 +65,7 @@ class AdminLoginService {
     } else {
       res.json({
         code: 20001,
-        msg: '用户名或密码错误，请重试！'
+        msg: '用户名,密码错误或该用户名已被注册!'
       })
     }
   }
