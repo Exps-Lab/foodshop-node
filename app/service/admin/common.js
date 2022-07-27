@@ -1,5 +1,3 @@
-const qiniu = require('qiniu')
-const CommonConf = require('../../../conf/index')
 const UserModel  = require('../../model/admin/user')
 const MenuModel  = require('../../model/admin/menu')
 
@@ -28,29 +26,6 @@ class CommonInfoService {
     }
   }
 
-  /* 获取文件上传token */
-  uploadToken (req, res) {
-    // 上传凭证
-    const { accessKey, secretKey, bucket } = CommonConf.qiniuConf
-    const options = {
-      scope: bucket,
-      expires: 7200
-    }
-    try {
-      const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
-      const putPolicy = new qiniu.rs.PutPolicy(options)
-      const uploadToken = putPolicy.uploadToken(mac)
-      res.json({
-        data: uploadToken
-      })
-    } catch (err) {
-      res.json({
-        code: 20002,
-        errLog: err
-      })
-    }
-  }
-
   /**
    * 根据用户角色返回查询条件
    * @param nowField     当前数据库中的字段名
@@ -68,7 +43,7 @@ class CommonInfoService {
         return { [nowField]: value }
       }
     } catch (err) {
-      _common.WebLogger.err('获取角色信息失败', err)
+      _common.WebLogger.error('获取角色信息失败', err)
       return ''
     }
   }

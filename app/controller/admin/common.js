@@ -1,11 +1,16 @@
 const CommonService = require('../../service/admin/common')
+const BaseClass = require('../../service/base-class/base')
 
-class CommonController {
+class CommonController extends BaseClass {
+  constructor () {
+    super()
+    this.uploadToken = this.uploadToken.bind(this)
+  }
   async getCommonInfo (req, res) {
     await CommonService.getCommonInfo(req, res)
   }
   uploadToken (req, res) {
-    CommonService.uploadToken(req, res)
+    this.getUploadToken(req, res)
   }
 }
 
