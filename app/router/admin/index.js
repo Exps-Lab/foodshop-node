@@ -5,6 +5,7 @@ const MenuController = require('../../controller/admin/menu')
 const RoleController = require('../../controller/admin/role')
 const CommonInfoController = require('../../controller/admin/common')
 const ShopController = require('../../controller/admin/shop')
+const FoodCategoryController = require('../../controller/admin/food-category')
 
 // common
 router.get('/auth/getCommonInfo', CommonInfoController.getCommonInfo)
@@ -33,5 +34,9 @@ router.post('/auth/shop/delete', ShopController.deleteShop)
 router.post('/auth/shop/add', ShopController.addShop)
 router.post('/auth/shop/update', ShopController.updateShop)
 router.get('/auth/shop/detail', ShopController.getDetail)
+
+// 商品管理
+router.get('/auth/food/getFoodCategoryList', FoodCategoryController.categoryList)
+router.post('/auth/food/addFoodCategory', FoodCategoryController.addCategory)
 
 module.exports = router
