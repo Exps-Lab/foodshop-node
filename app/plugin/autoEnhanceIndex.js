@@ -68,15 +68,19 @@ function autoEnhanceIndexPlugin (schema, options) {
   });
 
   schema.pre('save', function(next) {
-    AutoIncModel.findOneAndUpdate(
-      { model: settings.model, field: settings.field },
-      { $inc: { count: settings.incBy } },
-      { new: true },
-      (err, data) => {
-        if (err) return next(err);
-        this[settings.field] = data.count;
-        next();
-      });
+    if (this[settings.field] === undefined) {
+      AutoIncModel.findOneAndUpdate(
+        { model: settings.model, field: settings.field },
+        { $inc: { count: settings.incBy } },
+        { new: true },
+        (err, data) => {
+          if (err) return next(err);
+          this[settings.field] = data.count;
+          next();
+        });
+    } else {
+      next();
+    }
   })
 }
 

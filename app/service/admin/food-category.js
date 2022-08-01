@@ -1,19 +1,23 @@
 const FoodCategorModel = require('../../model/admin/food-category')
 
 class FoodCategoryService {
+  // 商品种类列表
   async categoryList (req, res) {
-    const { ids, name } = req.query
+    const { shop_id, name, pageNum = 1, pageSize = 10 } = req.query
     try {
-      let params = {}
+      let query_obj = { shop_id }
       if (name) {
-        params.name = new RegExp(name, 'i')
+        query_obj.name = new RegExp(name, 'i')
       }
-      if (ids) {
-        params.id = { $in: ids }
-      }
-      const data = await FoodCategorModel.find(params, '-_id -__v').lean(true)
+      const data = await FoodCategorModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize)
+      const count = await FoodCategorModel.find(query_obj).count()
       res.json({
-        data
+        data: {
+          list: data,
+          pageNum,
+          pageSize,
+          total: count
+        }
       })
     } catch (err) {
       res.json({
@@ -22,18 +26,14 @@ class FoodCategoryService {
       })
     }
   }
-  async addCategory (req, res) {
-    const params = req.body
+  // 新增商品种类(用于外部service调用)
+  async addCategory (data) {
+    const { shop_id, name, description } = data
     try {
-      await FoodCategorModel.create(params)
-      res.json({
-        msg: '保存成功'
-      })
+      const data = await FoodCategorModel.create({ shop_id, name, description })
+      return data
     } catch (err) {
-      res.json({
-        code: 20002,
-        errLog: err
-      })
+      throw new Error(err)
     }
   }
 }

@@ -1,17 +1,25 @@
 const FoodCategoryService = require('../../service/admin/food-category')
 
 class FoodCategoryController {
-  // 获取商品种类列表
+  // 商品种类列表
   categoryList (req, res) {
     try {
-      req.query.ids = JSON.parse(req.query.ids)
       _common.validate({
-        ids: {
-          type: 'array',
-          itemType: 'number',
+        shop_id: {
+          type: 'number',
+          convertType: 'number'
+        },
+        name: 'string?',
+        pageNum: {
+          type: 'number',
+          convertType: 'number',
           required: false
         },
-        name: 'string?'
+        pageSize: {
+          type: 'number',
+          convertType: 'number',
+          required: false
+        }
       }, req)
     } catch (err) {
       res.json({
@@ -27,6 +35,7 @@ class FoodCategoryController {
   addCategory (req, res) {
     try {
       _common.validate({
+        shop_id: 'number',
         name: 'string',
         description: 'string?'
       }, req)
@@ -40,22 +49,6 @@ class FoodCategoryController {
     }
     FoodCategoryService.addCategory(req, res)
   }
-  /* // 更新商品种类关联的商品id
-  updateCategory (req, res) {
-    try {
-      _common.validate({
-        food_id: 'number?'
-      }, req)
-    } catch (err) {
-      res.json({
-        code: 10001,
-        msg: '[Request Params Error]',
-        errLog: err
-      })
-      return
-    }
-    FoodCategoryService.addCategory(req, res)
-  } */
 }
 
 module.exports = new FoodCategoryController()
