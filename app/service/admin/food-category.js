@@ -1,4 +1,4 @@
-const FoodCategorModel = require('../../model/admin/food-category')
+const FoodCategoryModel = require('../../model/admin/food-category')
 
 class FoodCategoryService {
   async categoryList (req, res) {
@@ -11,7 +11,7 @@ class FoodCategoryService {
       if (ids) {
         params.id = { $in: ids }
       }
-      const data = await FoodCategorModel.find(params, '-_id -__v').lean(true)
+      const data = await FoodCategoryModel.find(params, '-_id -__v').lean(true)
       res.json({
         data
       })
@@ -25,7 +25,7 @@ class FoodCategoryService {
   async addCategory (req, res) {
     const params = req.body
     try {
-      await FoodCategorModel.create(params)
+      await FoodCategoryModel.create(params)
       res.json({
         msg: '保存成功'
       })
