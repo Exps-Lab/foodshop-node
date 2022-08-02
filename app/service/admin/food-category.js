@@ -1,4 +1,4 @@
-const FoodCategorModel = require('../../model/admin/food-category')
+const FoodCategoryModel = require('../../model/admin/food-category')
 
 class FoodCategoryService {
   // 商品种类列表
@@ -9,8 +9,8 @@ class FoodCategoryService {
       if (name) {
         query_obj.name = new RegExp(name, 'i')
       }
-      const data = await FoodCategorModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize)
-      const count = await FoodCategorModel.find(query_obj).count()
+      const data = await FoodCategoryModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize)
+      const count = await FoodCategoryModel.find(query_obj).count()
       res.json({
         data: {
           list: data,
@@ -30,7 +30,7 @@ class FoodCategoryService {
   async addCategory (data) {
     const { shop_id, name, description } = data
     try {
-      const data = await FoodCategorModel.create({ shop_id, name, description })
+      const data = await FoodCategoryModel.create({ shop_id, name, description })
       return data
     } catch (err) {
       throw new Error(err)
