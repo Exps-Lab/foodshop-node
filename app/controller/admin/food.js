@@ -4,7 +4,11 @@ class FoodController {
   constructor () {}
   static food_rules = {
     shop_id: 'number',
-    food_category_id: 'number?',
+    food_category_id: {
+      type: 'number',
+      convertType: 'number',
+      required: false
+    },
     food_category_name: 'string?',
     food_category_desc: 'string?',
     name: 'string',
@@ -35,7 +39,13 @@ class FoodController {
       _common.validate({
         shop_id: {
           type: 'number',
-          convertType: 'number'
+          convertType: 'number',
+          required: false
+        },
+        food_category_id: {
+          type: 'number',
+          convertType: 'number',
+          required: false
         },
         name: 'string?',
         pageNum: {
