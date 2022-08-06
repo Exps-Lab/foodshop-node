@@ -38,6 +38,7 @@ router.get('/auth/shop/detail', ShopController.getDetail)
 
 // 商品种类列表
 router.get('/auth/foodCategory/list', FoodCategoryController.categoryList)
+router.post('/auth/foodCategory/delete', FoodCategoryController.deleteCategory)
 
 // 商品管理
 router.get('/auth/food/list', FoodController.foodList)

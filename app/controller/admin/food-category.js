@@ -31,6 +31,22 @@ class FoodCategoryController {
     }
     FoodCategoryService.categoryList(req, res)
   }
+  // 删除商品种类
+  deleteCategory (req, res) {
+    try {
+      _common.validate({
+        id: 'number',
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err
+      })
+      return
+    }
+    FoodCategoryService.deleteCategory(req, res)
+  }
   // 新增商品种类
   addCategory (req, res) {
     try {

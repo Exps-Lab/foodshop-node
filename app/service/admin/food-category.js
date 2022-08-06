@@ -1,4 +1,5 @@
 const FoodCategoryModel = require('../../model/admin/food-category')
+const FoodModel = require('../../model/admin/food')
 
 class FoodCategoryService {
   // 商品种类列表
@@ -9,8 +10,18 @@ class FoodCategoryService {
       if (name) {
         query_obj.name = new RegExp(name, 'i')
       }
-      const data = await FoodCategoryModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize)
       const count = await FoodCategoryModel.find(query_obj).count()
+      let data = await FoodCategoryModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize).lean(true)
+      // 关联商品名称
+      for (const item of data) {
+        const food_ids = item.foods.map(food => {
+          return food.id
+        })
+        // 根据id查询商品列表
+        const foodList = await FoodModel.find({ id: food_ids })
+        const foods_names = foodList.map(item => item.name)
+        item.foods_names = foods_names
+      }
       res.json({
         data: {
           list: data,
@@ -22,6 +33,27 @@ class FoodCategoryService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+  // 删除商品种类
+  async deleteCategory (req, res) {
+    const { id } = req.body
+    try {
+      const data = await FoodCategoryModel.findOne({ id }).lean(true)
+      if (data?.foods.length > 0) {
+        throw new Error('该商品种类已关联商品')
+      }
+      await FoodCategoryModel.deleteOne({ id })
+      res.json({
+        msg: '删除成功'
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
         errLog: err
       })
     }

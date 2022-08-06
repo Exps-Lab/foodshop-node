@@ -34,7 +34,7 @@ const handleResponse = (req, res, next) => {
       // 请求失败响应
       params = {
         code: code,
-        msg: msg || 'failed',
+        msg: (msg instanceof Error ? `${msg}` : msg) || 'failed',
         data,
         stime: new Date().getTime()
       }

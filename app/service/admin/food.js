@@ -21,8 +21,57 @@ class FoodService {
       }
     }
     try {
-      const data = await FoodModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize)
       const count = await FoodModel.find(query_obj).count()
+      const data = await FoodModel.aggregate([
+        {
+          $lookup: {
+            from: 'food_category',
+            localField: 'food_category_id',
+            foreignField: 'id',
+            as: 'food_category',
+          }
+        },
+        {
+          $lookup: {
+            from: 'shop',
+            localField: 'shop_id',
+            foreignField: 'id',
+            as: 'shop',
+          }
+        },
+        {
+          $unwind: '$food_category'
+        },
+        {
+          $unwind: '$shop'
+        },
+        {
+          $addFields: {
+            food_category_name: '$food_category.name',
+            shop_name: '$shop.name'
+          }
+        },
+        {
+          $match: query_obj
+        },
+        {
+          $sort: { id: -1 }
+        },
+        {
+          $project: {
+            _id: 0,
+            __v: 0,
+            food_category: 0,
+            shop: 0
+          }
+        },
+        {
+          $skip: (pageNum - 1) * pageSize
+        },
+        {
+          $limit: pageSize
+        }
+      ])
       res.json({
         data: {
           list: data,
@@ -34,6 +83,7 @@ class FoodService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -49,6 +99,7 @@ class FoodService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -78,6 +129,7 @@ class FoodService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -112,6 +164,7 @@ class FoodService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
@@ -134,6 +187,7 @@ class FoodService {
     } catch (err) {
       res.json({
         code: 20002,
+        msg: err,
         errLog: err
       })
     }
