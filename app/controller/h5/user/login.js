@@ -1,4 +1,4 @@
-const LoginService = require('../../service/main-user/login')
+const UserService = require('../../../service/h5/user/login')
 
 class MainUserController {
   // 401 auth 用户名密码校验测试
@@ -22,7 +22,7 @@ class MainUserController {
   }
 
   addUser (req, res) {
-    LoginService.addUser(req, res)
+    UserService.addUser(req, res)
   }
 }
 
