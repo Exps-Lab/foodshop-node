@@ -21,8 +21,26 @@ class MainUserController {
     }
   }
 
-  addUser (req, res) {
-    UserService.addUser(req, res)
+  getCapture (req, res) {
+    UserService.getCapture(req, res)
+  }
+
+  login (req, res) {
+    try {
+      _common.validate({
+        username: 'string',
+        password: 'string',
+        code: 'string'
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    UserService.login(req, res)
   }
 }
 

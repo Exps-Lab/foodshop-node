@@ -50,7 +50,7 @@ CommonConf.customLogger = {
 
 // session配置
 CommonConf.sessionConf = {
-  'main-user': {
+  'h5': {
     secret: 'userSecret',
     resave: true,
     name: 'userSessionId',

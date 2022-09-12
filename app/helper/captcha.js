@@ -63,7 +63,7 @@ class Captcha {
   createCaptcha (code, options) {
     const width = 85
     const height = 35
-    const bg = ''
+    const bg = '#efefef'
 
     const bgRect = bg ?
       `<rect width="100%" height="100%" fill="${bg}"/>` : '';
