@@ -19,6 +19,7 @@ class LoginService {
         code: 20002,
         msg: '验证码错误！'
       })
+      return
     }
 
     const resData = await UserModel.findOne({ username })
