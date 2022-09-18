@@ -1,80 +1,16 @@
-const UserModel  = require('../../model/admin/user')
+// const UserModel  = require('../../model/admin/user')
+const LoginBase = require("../base-class/login-base")
 
-class AdminLoginService {
-  roleConf = {
-    'super': {
-      role: 1,
-      role_name: '超管',
-    },
-    'user': {
-      role: 2,
-      role_name: '普通用户',
-    }
+class AdminLoginService extends LoginBase {
+  constructor() {
+    super('admin')
   }
-
-  async login(req, res) {
-    const { username } = req.body
-    const [ resData ] = await UserModel.find({ username })
-
-    if (resData) {
-      this.checkUser(req, res, resData)
-    } else {
-      this.addUser(req, res)
-    }
-  }
-  addUser (req, res) {
-    const { username, password } = req.body
-    // 先控制用页面入口添加的都是用户
-    const { role, role_name } = this.roleConf['user']
-    const comData = {
-      username,
-      role,
-      role_name,
-      c_time: Date.now(),
-    }
-
-    UserModel.create({
-      ...comData,
-      password,
-    }).then(data => {
-      const { u_id } = data
-      req.session.username = username
-      req.session.admin_uid = u_id
-      res.json({
-        data: comData,
-        msg: 'login success'
-      })
-    })
-  }
-  checkUser (req, res, resData) {
-    const { password } = req.body
-    const { username, role, role_name, c_time, u_id } = resData
-
-    if (password === resData.password) {
-      req.session.username = username
-      req.session.admin_uid = u_id
-      res.json({
-        data: {
-          username,
-          role,
-          role_name,
-          c_time
-        },
-        msg: 'login success'
-      })
-    } else {
-      res.json({
-        code: 20001,
-        msg: '用户名,密码错误或该用户名已被注册!'
-      })
-    }
+  login (req, res) {
+    this.baseLogin(req, res)
   }
 
   logout (req, res) {
-    req.session.destroy()
-    res.json({
-      msg: 'logout success'
-    })
+    this.baseLogout(req, res)
   }
 }
 
