@@ -40,7 +40,7 @@ class BasePosClass extends BaseClass {
   // 根据ip获取城市名称
   async getCityNameFromIp (req) {
     const pos = await this.getPosByIp(req)
-    const { city } = pos.result.ad_info
+    const city = pos.result?.ad_info.city || '未知'
     return city.replace(/市$/, '')
   }
 
