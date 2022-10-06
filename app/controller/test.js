@@ -1,5 +1,5 @@
 const TestService = require('../service/test')
-const BasePosClass = require('../service/base-class/base')
+const BasePosClass = require('../service/base-class/pos-base')
 
 class TestController extends BasePosClass {
   constructor() {
@@ -24,7 +24,7 @@ class TestController extends BasePosClass {
   }
 
   async sessionDemo (req, res) {
-    const pos = await this.getCityNameFromIp(req)
+    const pos = await new BasePosClass().getPosByIp(req)
     res.json({
       data: pos
     })

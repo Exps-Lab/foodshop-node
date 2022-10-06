@@ -53,7 +53,7 @@ class LoginBase {
     }).then(data => {
       const { u_id } = data
       req.session.username = username
-      req.session.h5_uid = u_id
+      req.session.u_id = u_id
       res.json({
         data: comData,
         msg: 'login success'
@@ -67,7 +67,7 @@ class LoginBase {
 
     if (password === resData.password) {
       req.session.username = username
-      req.session.h5_uid = u_id
+      req.session.u_id = u_id
       res.json({
         data: resData,
         msg: 'login success'

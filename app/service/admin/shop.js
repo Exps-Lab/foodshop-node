@@ -1,4 +1,3 @@
-const CityModel  = require('../../model/common/city')
 const CategoryModel  = require('../../model/common/category')
 const ShopModel  = require('../../model/admin/shop')
 const { getQueryFromUser } = require('./common')
@@ -7,33 +6,6 @@ const BasePosClass = require('../base-class/pos-base')
 class ShopService extends BasePosClass {
   constructor() {
     super()
-  }
-
-  async getCityInfo (req, res) {
-    let cityName = await this.getCityNameFromIp(req)
-    let cityPin = _common.CtoPin(cityName)
-    let firstLetter = cityPin.charAt(0).toUpperCase()
-
-    try {
-      let cities = await CityModel.find({}).lean(true)
-      let cityMap = cities[0].cityData
-      if (cityMap[firstLetter]?.length) {
-        let city = cityMap[firstLetter].filter(city => city.pinyin === cityPin)
-        res.json({
-          data: city[0]
-        })
-        return
-      }
-      res.json({
-        code: 20002,
-        msg: '未找到您的城市'
-      })
-    } catch (err) {
-      res.json({
-        code: 20002,
-        errLog: err
-      })
-    }
   }
 
   async searchPlace (req, res) {
@@ -69,8 +41,8 @@ class ShopService extends BasePosClass {
 
   async shopList (req, res) {
     const { rn = 10, pn = 1 } = req.query
-    const admin_uid = req.session.admin_uid
-    const queryObj = await getQueryFromUser('admin_uid', admin_uid)
+    const u_id = req.session.u_id
+    const queryObj = await getQueryFromUser('u_id', u_id)
 
     try {
       let shopData = await ShopModel.find(queryObj, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
@@ -93,9 +65,9 @@ class ShopService extends BasePosClass {
   }
 
   async addShop (req, res) {
-    const admin_uid = req.session.admin_uid
+    const u_id = req.session.u_id
     const data = req.body
-    data.admin_uid = admin_uid
+    data.u_id = u_id
     try {
       await ShopModel.create(data)
       res.json({

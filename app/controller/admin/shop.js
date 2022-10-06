@@ -1,9 +1,7 @@
 const ShopService = require('../../service/admin/shop')
-
+const CityBase = require('../../service/base-class/city-base')
 
 class ShopController {
-  constructor() {}
-
   // 商铺详情验证rule
   static paramsRules = {
     name: 'string',
@@ -39,7 +37,8 @@ class ShopController {
   }
 
   async getCityInfo (req, res) {
-    await ShopService.getCityInfo(req, res)
+    const cityBaseInstance = new CityBase()
+    await cityBaseInstance.getCityInfo(req, res)
   }
 
   async searchPlace (req, res) {

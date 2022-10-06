@@ -7,6 +7,7 @@ class BasePosClass extends BaseClass {
     this.txKey = 'UIWBZ-OJNWV-KOTPW-UEBS7-4KSVH-B2BNG'
   }
 
+  // 获取真实ip
   async getRemoteAddress (req) {
     let ip = ''
     try {
@@ -21,27 +22,38 @@ class BasePosClass extends BaseClass {
     return ip
   }
 
+  // 根据ip获取模糊定位
+  async getPosByIp (req) {
+    let ip = await this.getRemoteAddress(req)
+    try {
+      return await _common.request('https://apis.map.qq.com/ws/location/v1/ip', {
+        ip,
+        key: this.txKey
+      })
+    } catch (e) {
+      return {
+        result: null
+      }
+    }
+  }
+
   // 根据ip获取城市名称
   async getCityNameFromIp (req) {
-    let ip = await this.getRemoteAddress(req)
-    const pos = await _common.request('https://api.map.baidu.com/location/ip', {
-      ip,
-      ak: this.bdKey
-    })
-    return pos.content.address.replace(/市$/, '')
+    const pos = await this.getPosByIp(req)
+    const { city } = pos.result.ad_info
+    return city.replace(/市$/, '')
   }
 
   // 检索某一行政区划内的地点信息
   async search (reqQuery) {
     const { keyword, city_name, pn } = reqQuery
-    const pos = await _common.request('https://apis.map.qq.com/ws/place/v1/search', {
+    return await _common.request('https://apis.map.qq.com/ws/place/v1/search', {
       keyword: encodeURIComponent(keyword),
       boundary: `region(${city_name}, 1)`,
       page_size: 10,
       page_index: pn,
       key: this.txKey
     })
-    return pos
   }
 }
 
