@@ -1,18 +1,40 @@
 const CityBase = require('../../../service/base-class/city-base')
 const PosBase = require('../../../service/base-class/pos-base')
+const CommonService = require('../../../service/h5/common')
 
 class MainUserController {
+  // 获取所有城市列表
   async getAllCity (req, res) {
     const cityBaseInstance = new CityBase()
     await cityBaseInstance.getAllCity(req, res)
   }
 
+  // 根据ip获取定位
   async getPosByIp (req, res) {
     const posBaseInstance = new PosBase()
     const posInfo = await posBaseInstance.getPosByIp(req, res)
     res.json({
       data: posInfo
     })
+  }
+
+  // 搜索附近place并且计算距传入点的距离
+  async searchWithRangeControl (req, res) {
+    try {
+      _common.validate({
+        keyword: 'string',
+        city_name: 'string',
+        current_pos: 'string'
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return false
+    }
+    await CommonService.searchWithRangeService(req, res)
   }
 }
 

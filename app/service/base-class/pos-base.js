@@ -46,7 +46,7 @@ class BasePosClass extends BaseClass {
 
   // 检索某一行政区划内的地点信息
   async search (reqQuery) {
-    const { keyword, city_name, pn } = reqQuery
+    const { keyword, city_name, pn = 1 } = reqQuery
     return await _common.request('https://apis.map.qq.com/ws/place/v1/search', {
       keyword: encodeURIComponent(keyword),
       boundary: `region(${city_name}, 1)`,
