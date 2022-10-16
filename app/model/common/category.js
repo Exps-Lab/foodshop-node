@@ -5,7 +5,8 @@ const AutoEnhanceIndexPlugin = require('../../plugin/autoEnhanceIndex')
 const baseSchema = {
   id: Number,
   level: Number,
-  name: String
+  name: String,
+  image_url: String
 }
 
 const CategorySchema = new Schema({

@@ -3,6 +3,7 @@ const CommonConf = require('../../../conf/index')
 
 class BaseClass {
   constructor() {
+    this.h5ImgHost = 'https://fuss10.elemecdn.com'
   }
 
   /* 获取七牛云文件上传token */

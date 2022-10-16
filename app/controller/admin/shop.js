@@ -1,5 +1,6 @@
 const ShopService = require('../../service/admin/shop')
 const CityBase = require('../../service/base-class/city-base')
+const ShopBase = require('../../service/base-class/shop-base')
 
 class ShopController {
   // 商铺详情验证rule
@@ -59,7 +60,8 @@ class ShopController {
   }
 
   async getCategory (req, res) {
-    await ShopService.getCategory(req, res)
+    const shopBaseInstance = new ShopBase()
+    await shopBaseInstance.getShopCategory(req, res)
   }
 
   async addShop (req, res) {

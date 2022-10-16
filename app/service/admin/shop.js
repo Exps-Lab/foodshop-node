@@ -1,4 +1,3 @@
-const CategoryModel  = require('../../model/common/category')
 const ShopModel  = require('../../model/admin/shop')
 const { getQueryFromUser } = require('./common')
 const BasePosClass = require('../base-class/pos-base')
@@ -24,19 +23,6 @@ class ShopService extends BasePosClass {
         place: filter
       }
     })
-  }
-
-  async getCategory (req, res) {
-    try {
-      const data = await CategoryModel.find({}, '-_id -__v').lean(true)
-      res.json({ data })
-    } catch (err) {
-      res.json({
-        code: 20002,
-        msg: err,
-        errLog: err
-      })
-    }
   }
 
   async shopList (req, res) {
