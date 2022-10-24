@@ -7,6 +7,45 @@ class BasePosClass extends BaseClass {
     this.txKey = 'UIWBZ-OJNWV-KOTPW-UEBS7-4KSVH-B2BNG'
   }
 
+  /**
+   * 两个定位(gps)的直线距离
+   * @param lat1 起点纬度
+   * @param lng1 起点经度
+   * @param lat2 终点纬度
+   * @param lng2 终点经度
+   * @returns {number}
+   */
+  static getTwoPosDistance (lat1,  lng1,  lat2,  lng2){
+    const radLat1 = lat1 * Math.PI / 180.0;
+    const radLat2 = lat2 * Math.PI / 180.0;
+    const a = radLat1 - radLat2;
+    const b = (lng1 * Math.PI / 180.0) - (lng2 * Math.PI / 180.0);
+    let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+      Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s = s * 6378.137 ; // EARTH_RADIUS;
+    s = Math.round(s * 10000) / 10000;
+    return Number(s.toFixed(2))
+  }
+
+  // 两位置路线耗费时间
+  // startPos String (lat 纬度, lng 经度)
+  // endPos   String (lat 纬度, lng 经度)
+  async getEBicyclingCostTime (startPos, endPos) {
+    const txEBicyclingApi = 'https://api.map.baidu.com/direction/v2/riding'
+    try {
+      const resObj = await _common.request(txEBicyclingApi, {
+        origin: startPos,
+        destination: endPos,
+        ak: this.bdKey,
+        riding_type: 1, // 0：自行车，1电车，
+      })
+      const { duration } = resObj.result.routes[0]
+      return Math.floor(duration / 60)
+    } catch (e) {
+      return null
+    }
+  }
+
   // 获取真实ip
   async getRemoteAddress (req) {
     let ip = ''

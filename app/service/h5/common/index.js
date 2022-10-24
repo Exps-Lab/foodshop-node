@@ -12,7 +12,7 @@ class commonService extends PosBase {
 
     let filter = place.data.map(item => {
       const { title = '', address = '', location } = item
-      const distance = _common.getTwoPosDistance(Number(lat), Number(lng), location.lat, location.lng)
+      const distance = PosBase.getTwoPosDistance(Number(lat), Number(lng), location.lat, location.lng)
       return {
         title,
         address,

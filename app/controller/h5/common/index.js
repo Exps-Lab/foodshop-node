@@ -1,6 +1,7 @@
 const CityBase = require('../../../service/base-class/city-base')
 const PosBase = require('../../../service/base-class/pos-base')
 const CommonService = require('../../../service/h5/common')
+const CommonHomeService = require('../../../service/h5/common/home')
 
 class MainUserController {
   // 获取所有城市列表
@@ -35,6 +36,24 @@ class MainUserController {
       return false
     }
     await CommonService.searchWithRangeService(req, res)
+  }
+
+  // 获取两个位置到达时间
+  async getPosCostTime (req, res) {
+    try {
+      _common.validate({
+        startPos: 'string',
+        endPosArr: 'array',
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return false
+    }
+    await CommonHomeService.getPosCostTimeService(req, res)
   }
 }
 
