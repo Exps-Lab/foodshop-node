@@ -85,11 +85,22 @@ class BasePosClass extends BaseClass {
 
   // 检索某一行政区划内的地点信息
   async search (reqQuery) {
-    const { keyword, city_name, pn = 1 } = reqQuery
+    const { keyword = '', city_name, pn = 1, page_size = 10 } = reqQuery
     return await _common.request('https://apis.map.qq.com/ws/place/v1/search', {
       keyword: encodeURIComponent(keyword),
       boundary: `region(${city_name}, 1)`,
-      page_size: 10,
+      page_size,
+      page_index: pn,
+      key: this.txKey
+    })
+  }
+
+  // 检索附近推荐地址
+  async searchNearbyWithoutKeyword (reqQuery) {
+    const { current_pos, pn = 1, page_size = 10 } = reqQuery
+    return await _common.request('https://apis.map.qq.com/ws/place/v1/explore', {
+      boundary: `nearby(${current_pos},100)`,
+      page_size,
       page_index: pn,
       key: this.txKey
     })

@@ -7,6 +7,7 @@ router.get('/noauth/getAllCity', CommonController.getAllCity)
 router.get('/noauth/getPosByIp', CommonController.getPosByIp)
 router.get('/noauth/getPosCostTime', CommonController.getPosCostTime)
 router.get('/noauth/place/searchWithRange', CommonController.searchWithRangeControl)
+router.get('/noauth/place/searchWithoutKeyword', CommonController.searchWithoutKeyword)
 
 /* 商家列表 */
 router.get('/noauth/shop/list', HomeController.shopList)

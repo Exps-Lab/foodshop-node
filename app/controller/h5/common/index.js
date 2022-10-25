@@ -25,7 +25,8 @@ class MainUserController {
       _common.validate({
         keyword: 'string',
         city_name: 'string',
-        current_pos: 'string'
+        current_pos: 'string',
+        page_size: 'string',
       }, req)
     } catch (err) {
       res.json({
@@ -36,6 +37,24 @@ class MainUserController {
       return false
     }
     await CommonService.searchWithRangeService(req, res)
+  }
+
+  // 搜索附近推荐的place
+  async searchWithoutKeyword (req, res) {
+    try {
+      _common.validate({
+        page_size: 'string',
+        current_pos: 'string',
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return false
+    }
+    await CommonService.searchWithoutKeywordService(req, res)
   }
 
   // 获取两个位置到达时间

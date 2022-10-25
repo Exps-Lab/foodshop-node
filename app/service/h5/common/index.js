@@ -27,6 +27,25 @@ class commonService extends PosBase {
       }
     })
   }
+
+  // 查询附近地标并计算距离
+  async searchWithoutKeywordService (req, res) {
+    const place = await this.searchNearbyWithoutKeyword(req.query)
+    const filter = place.data.map(item => {
+      const { title = '', address = '', location } = item
+      return {
+        title,
+        address,
+        location
+      }
+    })
+    res.json({
+      data: {
+        total: place.count,
+        place: filter
+      }
+    })
+  }
 }
 
 module.exports = new commonService()
