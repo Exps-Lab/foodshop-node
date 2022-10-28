@@ -13,6 +13,14 @@ class ShopBase extends BaseClass {
         // 过滤掉"全部"
         if (item.image_url) {
           item.image_url = `${this.h5ImgHost}/${item.image_url}`
+          // 处理子分类的图片链接
+          if (item.sub_categories) {
+            item.sub_categories.forEach(subItem => {
+              if (subItem.image_url) {
+                subItem.image_url = `${this.h5ImgHost}/${subItem.image_url}`
+              }
+            })
+          }
           return item
         }
       })
