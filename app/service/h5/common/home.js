@@ -1,18 +1,19 @@
 const ShopModel = require('../../../model/admin/shop')
 const PosBase = require("../../base-class/pos-base")
+const ShopBase = require('../../base-class/shop-base')
 
 class HomeService extends PosBase {
-  // 首页推荐列表
-  async homeList (req, res) {
+  constructor(props) {
+    super(props);
+    this.shopBase = new ShopBase()
+  }
+
+  // 商铺推荐列表
+  async shopList (req, res) {
     try {
-      const [ lat, lng ] = req.query.current_pos.split(',')
-      let data = await ShopModel.find().lean(true)
-      for (const item of data) {
-        item.distance = PosBase.getTwoPosDistance(Number(lat), Number(lng), item.pos.lat, item.pos.lng)
-      }
-      data.sort((value1, value2) => value1.distance - value2.distance)
+      const filterData = await this.shopBase.getFilterShopList(req.query)
       res.json({
-        data
+        data: filterData
       })
     } catch (err) {
       res.json({
@@ -37,38 +38,6 @@ class HomeService extends PosBase {
       data: timeGroups
     })
   }
-
-  // 计算路线所需时间 [note]控制并发版本
-  // async handleCostGroups (startPos, endPosGroups) {
-  //   let count = 0
-  //   let resTime = []
-  //   const maxRequest = 10
-  //   const { lat, lng } = startPos
-  //   const endGroupLen = endPosGroups.length
-  //   const min = Math.min(endGroupLen, maxRequest)
-  //   const copyEndPos = JSON.parse(JSON.stringify(endPosGroups))
-  //
-  //   const calcTime = async (endPos) => {
-  //     if (endPos) {
-  //       const {lat: endLat, lng: endLng} = endPos.pos
-  //       resTime.push(await this.getEBicyclingCostTime(`${Number(lat)},${Number(lng)}`, `${endLat},${endLng}`))
-  //       count++
-  //       if (count >= endGroupLen) {
-  //         return resTime
-  //       } else {
-  //         copyEndPos.length && await calcTime(copyEndPos.shift())
-  //       }
-  //     }
-  //   }
-  //
-  //   for (let i=0; i<min; i++) {
-  //     await calcTime(copyEndPos.shift())
-  //   }
-  //
-  //   for (let i=0; i<endGroupLen; i++) {
-  //     endPosGroups[i].costTime = resTime[i]
-  //   }
-  // }
 
   // 模糊搜索商铺和商品
   async shopAndFoodSearch (req, res) {
@@ -104,6 +73,39 @@ class HomeService extends PosBase {
         }
       }
       data.sort((value1, value2) => value1.distance - value2.distance)
+      res.json({
+        data
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 获取所有商铺分类
+  async getShopCategory (req, res) {
+    try {
+      const data = await this.shopBase.getShopCategory()
+      res.json({
+        data
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 获取所有商铺分类
+  async getShopSubCategory (req, res) {
+    try {
+      const { categoryId } = req.query
+      const data = await this.shopBase.getShopSubCategory(categoryId)
       res.json({
         data
       })

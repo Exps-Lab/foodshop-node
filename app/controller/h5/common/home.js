@@ -1,12 +1,16 @@
 const HomeService = require('../../../service/h5/common/home')
-const ShopBase = require('../../../service/base-class/shop-base')
 
 class HomeController {
   // 商铺推荐列表
   async shopList (req, res) {
     try {
       _common.validate({
-        current_pos: 'string'
+        distance: {
+          type: 'number',
+          convertType: 'number',
+        },
+        current_pos: 'string?',
+        shop_type: 'string?',
       }, req)
     } catch (err) {
       res.json({
@@ -16,7 +20,7 @@ class HomeController {
       })
       return
     }
-    await HomeService.homeList(req, res)
+    await HomeService.shopList(req, res)
   }
 
   // 商铺或商品模糊查询
@@ -38,8 +42,24 @@ class HomeController {
   }
 
   async getCategory (req, res) {
-    const shopBaseInstance = new ShopBase()
-    await shopBaseInstance.getShopCategory(req, res)
+    await HomeService.getShopCategory(req, res)
+  }
+
+  async getSubCategory (req, res) {
+    try {
+      _common.validate({
+        categoryId: 'string'
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+
+    await HomeService.getShopSubCategory(req, res)
   }
 }
 

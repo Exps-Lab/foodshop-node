@@ -12,6 +12,7 @@ router.get('/noauth/place/searchWithoutKeyword', CommonController.searchWithoutK
 /* 商家列表 */
 router.get('/noauth/shop/list', HomeController.shopList)
 router.get('/noauth/shop/getCategory', HomeController.getCategory)
+router.get('/noauth/shop/getSubCategory', HomeController.getSubCategory)
 router.get('/noauth/global/search', HomeController.shopAndFoodSearch)
 
 
