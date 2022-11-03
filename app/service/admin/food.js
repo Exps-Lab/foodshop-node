@@ -138,7 +138,9 @@ class FoodService {
   async updateFood (req, res) {
     const params = req.body
     try {
-      const { shop_id, food_category_name: name, food_category_desc: description, food_category_id_old } = params
+      const { id, shop_id, food_category_name: name, food_category_desc: description } = params
+      // 查询商品更新前的种类id
+      const { food_category_id: food_category_id_old } = await FoodModel.findOne({ id }).lean(true)
       if (name) {
         // 新增商品种类
         const { id } = await FoodCategoryService.addCategory({ shop_id, name, description })
@@ -146,6 +148,7 @@ class FoodService {
       }
       // 更新商品
       const food_result = await FoodModel.findOneAndUpdate({ id: params.id }, params)
+      // 商品种类发生变更
       if (params.food_category_id !== food_category_id_old) {
         // 删除旧商品种类的关联字段
         const old_category = await FoodCategoryModel.findOne({ id: food_category_id_old })
