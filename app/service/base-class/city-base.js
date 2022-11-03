@@ -16,21 +16,11 @@ class cityBase extends BasePosClass {
     try {
       const cityMap = await this.getAllCityData()
       if (cityMap[firstLetter]?.length) {
-        let city = cityMap[firstLetter].filter(city => city.pinyin === cityPin)
-        res.json({
-          data: city[0]
-        })
-        return
+        return cityMap[firstLetter].filter(city => city.pinyin === cityPin)[0]
       }
-      res.json({
-        code: 20002,
-        msg: '未找到您的城市'
-      })
+      return null
     } catch (err) {
-      res.json({
-        code: 20002,
-        errLog: err
-      })
+      throw new Error(err)
     }
   }
 

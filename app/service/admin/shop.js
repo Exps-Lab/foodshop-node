@@ -1,10 +1,12 @@
 const ShopModel  = require('../../model/admin/shop')
 const { getQueryFromUser } = require('./common')
-const BasePosClass = require('../base-class/pos-base')
+const ShopBase = require('../base-class/shop-base')
+const CityBase = require('../base-class/city-base')
 
-class ShopService extends BasePosClass {
+class ShopService extends ShopBase {
   constructor() {
     super()
+    this.cityBase = new CityBase()
   }
 
   async searchPlace (req, res) {
@@ -106,6 +108,36 @@ class ShopService extends BasePosClass {
       await ShopModel.findOneAndDelete({ id })
       res.json({
         msg: '删除成功'
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  async getShopCategoryService (req, res) {
+    try {
+      const data = await this.getShopCategory()
+      res.json({
+        data
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  async getCityInfoService (req, res) {
+    try {
+      const data = await this.cityBase.getCityInfo()
+      res.json({
+        data
       })
     } catch (err) {
       res.json({

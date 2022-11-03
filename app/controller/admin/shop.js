@@ -1,6 +1,5 @@
 const ShopService = require('../../service/admin/shop')
 const CityBase = require('../../service/base-class/city-base')
-const ShopBase = require('../../service/base-class/shop-base')
 
 class ShopController {
   // 商铺详情验证rule
@@ -37,11 +36,6 @@ class ShopController {
     }
   }
 
-  async getCityInfo (req, res) {
-    const cityBaseInstance = new CityBase()
-    await cityBaseInstance.getCityInfo(req, res)
-  }
-
   async searchPlace (req, res) {
     try {
       _common.validate({
@@ -59,9 +53,12 @@ class ShopController {
     await ShopService.searchPlace(req, res)
   }
 
+  async getCityInfo (req, res) {
+    await ShopService.getCityInfoService(req, res)
+  }
+
   async getCategory (req, res) {
-    const shopBaseInstance = new ShopBase()
-    await shopBaseInstance.getShopCategory(req, res)
+    await ShopService.getShopCategoryService(req, res)
   }
 
   async addShop (req, res) {
