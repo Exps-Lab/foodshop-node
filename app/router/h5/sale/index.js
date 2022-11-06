@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const CommonController = require('../../../controller/h5/common')
-const HomeController = require('../../../controller/h5/common/home')
+const CommonController = require('../../../controller/h5/sale/common')
+const HomeController = require('../../../controller/h5/sale/home')
 
 router.get('/noauth/getAllCity', CommonController.getAllCity)
 router.get('/noauth/getPosByIp', CommonController.getPosByIp)

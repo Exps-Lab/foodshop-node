@@ -2,7 +2,7 @@
 const testRouter  = require('./test')
 const AdminRouter = require('./admin/index')
 const H5User = require('./h5/user')
-const H5Common = require('./h5/common')
+const H5Sale = require('./h5/sale')
 
 module.exports =  (app)  => {
   // 默认访问
@@ -15,5 +15,5 @@ module.exports =  (app)  => {
   app.use('/test', testRouter)
   app.use('/admin', AdminRouter)
   app.use('/h5/user', H5User)
-  app.use('/h5/common', H5Common)
+  app.use('/h5/sale', H5Sale)
 }

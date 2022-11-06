@@ -1,7 +1,7 @@
 const CityBase = require('../../../service/base-class/city-base')
 const PosBase = require('../../../service/base-class/pos-base')
-const CommonService = require('../../../service/h5/common')
-const CommonHomeService = require('../../../service/h5/common/home')
+const CommonService = require('../../../service/h5/sale/common')
+const CommonHomeService = require('../../../service/h5/sale/home')
 
 class MainUserController {
   // 获取所有城市列表

@@ -1,4 +1,4 @@
-const HomeService = require('../../../service/h5/common/home')
+const HomeService = require('../../../service/h5/sale/home')
 
 class HomeController {
   // 商铺推荐列表

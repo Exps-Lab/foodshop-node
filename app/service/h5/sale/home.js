@@ -85,7 +85,7 @@ class HomeService extends PosBase {
     }
   }
 
-  // 获取所有商铺分类
+  // 获取所有商铺种类
   async getShopCategory (req, res) {
     try {
       const data = await this.shopBase.getShopCategory()
@@ -101,7 +101,7 @@ class HomeService extends PosBase {
     }
   }
 
-  // 获取所有商铺分类
+  // 获取当前种类对应二级分类
   async getShopSubCategory (req, res) {
     try {
       const { categoryId } = req.query
