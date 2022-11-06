@@ -5,6 +5,21 @@ class commonService extends PosBase {
     super()
   }
 
+  // 计算两个位置之间路线所需时间
+  async getPosCostTimeService (req, res) {
+    const [ startLat, startLng ] = req.query.startPos.split(',')
+    const endPosGroups = req.query.endPosArr || []
+    const timeGroups = []
+    for (let i=0; i<endPosGroups.length; i++) {
+      const { lat, lng } = JSON.parse(endPosGroups[i])
+      const time = await this.getEBicyclingCostTime(`${startLat},${startLng}`, `${lat},${lng}`)
+      timeGroups.push(time)
+    }
+    res.json({
+      data: timeGroups
+    })
+  }
+
   // 查询附近地标并计算距离
   async searchWithRangeService (req, res) {
     const [ lat, lng ] = req.query.current_pos.split(',')

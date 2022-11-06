@@ -1,4 +1,4 @@
-const CommonService = require('../../service/admin/common')
+const CommonService = require('../../service/admin/user')
 const BaseClass = require('../../service/base-class/base')
 
 class CommonController extends BaseClass {

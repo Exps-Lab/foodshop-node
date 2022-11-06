@@ -1,7 +1,7 @@
 const FoodModel = require('../../model/admin/food')
 const FoodCategoryModel = require('../../model/admin/food-category')
 const FoodCategoryService = require('./food-category')
-const { getQueryFromUser } = require('./common')
+const { getQueryFromUser } = require('./user')
 
 class FoodService {
   // 商品列表

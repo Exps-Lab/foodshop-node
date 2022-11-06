@@ -1,4 +1,5 @@
-const HomeService = require('../../../service/h5/sale/home')
+
+const ShopService = require('../../../service/h5/sale/shop')
 
 class HomeController {
   // 商铺推荐列表
@@ -20,7 +21,7 @@ class HomeController {
       })
       return
     }
-    await HomeService.shopList(req, res)
+    await ShopService.shopList(req, res)
   }
 
   // 商铺或商品模糊查询
@@ -38,11 +39,11 @@ class HomeController {
       })
       return
     }
-    await HomeService.shopAndFoodSearch(req, res)
+    await ShopService.shopAndFoodSearch(req, res)
   }
 
   async getCategory (req, res) {
-    await HomeService.getShopCategory(req, res)
+    await ShopService.getShopCategoryService(req, res)
   }
 
   async getSubCategory (req, res) {
@@ -59,7 +60,7 @@ class HomeController {
       return
     }
 
-    await HomeService.getShopSubCategory(req, res)
+    await ShopService.getShopSubCategoryService(req, res)
   }
 }
 

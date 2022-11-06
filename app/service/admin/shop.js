@@ -1,5 +1,5 @@
 const ShopModel  = require('../../model/admin/shop')
-const { getQueryFromUser } = require('./common')
+const { getQueryFromUser } = require('./user')
 const ShopBase = require('../base-class/shop-base')
 const CityBase = require('../base-class/city-base')
 

@@ -1,7 +1,6 @@
 const CityBase = require('../../../service/base-class/city-base')
 const PosBase = require('../../../service/base-class/pos-base')
-const CommonService = require('../../../service/h5/sale/common')
-const CommonHomeService = require('../../../service/h5/sale/home')
+const PosService = require('../../../service/h5/sale/pos')
 
 class MainUserController {
   // 获取所有城市列表
@@ -36,7 +35,7 @@ class MainUserController {
       })
       return false
     }
-    await CommonService.searchWithRangeService(req, res)
+    await PosService.searchWithRangeService(req, res)
   }
 
   // 搜索附近推荐的place
@@ -54,7 +53,7 @@ class MainUserController {
       })
       return false
     }
-    await CommonService.searchWithoutKeywordService(req, res)
+    await PosService.searchWithoutKeywordService(req, res)
   }
 
   // 获取两个位置到达时间
@@ -72,7 +71,7 @@ class MainUserController {
       })
       return false
     }
-    await CommonHomeService.getPosCostTimeService(req, res)
+    await PosService.getPosCostTimeService(req, res)
   }
 }
 

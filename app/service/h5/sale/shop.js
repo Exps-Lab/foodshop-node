@@ -2,16 +2,15 @@ const ShopModel = require('../../../model/admin/shop')
 const PosBase = require("../../base-class/pos-base")
 const ShopBase = require('../../base-class/shop-base')
 
-class HomeService extends PosBase {
+class ShopService extends ShopBase {
   constructor(props) {
     super(props);
-    this.shopBase = new ShopBase()
   }
 
   // 商铺推荐列表
   async shopList (req, res) {
     try {
-      const filterData = await this.shopBase.getFilterShopList(req.query)
+      const filterData = await this.getFilterShopList(req.query)
       res.json({
         data: filterData
       })
@@ -22,21 +21,6 @@ class HomeService extends PosBase {
         errLog: err
       })
     }
-  }
-
-  // 计算路线所需时间
-  async getPosCostTimeService (req, res) {
-    const [ startLat, startLng ] = req.query.startPos.split(',')
-    const endPosGroups = req.query.endPosArr || []
-    const timeGroups = []
-    for (let i=0; i<endPosGroups.length; i++) {
-      const { lat, lng } = JSON.parse(endPosGroups[i])
-      const time = await this.getEBicyclingCostTime(`${startLat},${startLng}`, `${lat},${lng}`)
-      timeGroups.push(time)
-    }
-    res.json({
-      data: timeGroups
-    })
   }
 
   // 模糊搜索商铺和商品
@@ -86,9 +70,9 @@ class HomeService extends PosBase {
   }
 
   // 获取所有商铺种类
-  async getShopCategory (req, res) {
+  async getShopCategoryService (req, res) {
     try {
-      const data = await this.shopBase.getShopCategory()
+      const data = await this.getShopCategory()
       res.json({
         data
       })
@@ -102,10 +86,10 @@ class HomeService extends PosBase {
   }
 
   // 获取当前种类对应二级分类
-  async getShopSubCategory (req, res) {
+  async getShopSubCategoryService (req, res) {
     try {
       const { categoryId } = req.query
-      const data = await this.shopBase.getShopSubCategory(categoryId)
+      const data = await this.getShopSubCategory(categoryId)
       res.json({
         data
       })
@@ -119,4 +103,4 @@ class HomeService extends PosBase {
   }
 }
 
-module.exports = new HomeService()
+module.exports = new ShopService()
