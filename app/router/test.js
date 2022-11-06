@@ -1,11 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const TestControler = require('../controler/test')
+const TestController = require('../controller/test')
 
-router.get('/a', TestControler.showTest)
+router.get('/a', TestController.showTest)
 
-router.get('/b', function (req, res) {
-  res.send('About testRouter b page')
-})
+router.get('/b', TestController.sessionDemo)
 
 module.exports = router
