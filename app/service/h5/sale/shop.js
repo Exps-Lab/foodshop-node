@@ -1,4 +1,6 @@
 const ShopModel = require('../../../model/admin/shop')
+const foodCategoryModel = require('../../../model/admin/food-category')
+const foodModel = require('../../../model/admin/food')
 const PosBase = require("../../base-class/pos-base")
 const ShopBase = require('../../base-class/shop-base')
 
@@ -101,6 +103,108 @@ class ShopService extends ShopBase {
       })
     }
   }
+
+  // 获取商铺基本信息
+  async shopBaseInfoService (req, res) {
+    try {
+      const { shop_id, current_pos } = req.query
+      const shopInfo = await ShopModel.findOne({ id: shop_id }, { admin_uid: 0, _id:0, __v: 0 }).lean(true)
+      const [ userLat, userLng ] = current_pos.split(',')
+      const { lat, lng } = shopInfo.pos
+      shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`)
+      res.json({
+        data: shopInfo
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 商铺关联商品分类以及对应商品的list接口
+  async getShopGoodsService (req, res) {
+    try {
+      const { shop_id } = req.query
+      const foodData = await foodCategoryModel.aggregate([
+        {
+          $match: {
+            shop_id
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            __v: 0,
+            shop_id: 0,
+            foods: 0
+          }
+        },
+        {
+          $lookup: {
+            from: 'food',
+            localField: 'id',
+            foreignField: 'food_category_id',
+            as: 'foods',
+          }
+        },
+      ])
+
+      res.json({
+        data: foodData
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 搜索商铺内商品
+  async searchShopGoodsService (req, res) {
+    try {
+      const { shop_id, keyword = '' } = req.query
+      const keywordReg = new RegExp(keyword, 'ig')
+      const foodData = await foodModel.aggregate([
+        {
+          $match: {
+            $and: [
+              { shop_id },
+              {
+                $or: [
+                  { 'name' : { $regex: keywordReg } },
+                  { 'description' : { $regex: keywordReg } },
+                  { 'material' : { $regex: keywordReg } },
+                ]
+              }
+            ]
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            __v: 0,
+            admin_uid: 0,
+          }
+        },
+      ])
+
+      res.json({
+        data: foodData
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
 }
+
 
 module.exports = new ShopService()

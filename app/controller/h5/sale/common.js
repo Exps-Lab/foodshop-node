@@ -1,21 +1,15 @@
-const CityBase = require('../../../service/base-class/city-base')
-const PosBase = require('../../../service/base-class/pos-base')
 const PosService = require('../../../service/h5/sale/pos')
+const CityService = require('../../../service/h5/sale/city')
 
 class MainUserController {
   // 获取所有城市列表
   async getAllCity (req, res) {
-    const cityBaseInstance = new CityBase()
-    await cityBaseInstance.getAllCity(req, res)
+    await CityService.getAllCityService(req, res)
   }
 
   // 根据ip获取定位
   async getPosByIp (req, res) {
-    const posBaseInstance = new PosBase()
-    const posInfo = await posBaseInstance.getPosByIp(req, res)
-    res.json({
-      data: posInfo
-    })
+    await PosService.getPosByIpService(req, res)
   }
 
   // 搜索附近place并且计算距传入点的距离
