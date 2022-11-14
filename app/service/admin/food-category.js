@@ -4,14 +4,14 @@ const FoodModel = require('../../model/admin/food')
 class FoodCategoryService {
   // 商品种类列表
   async categoryList (req, res) {
-    const { shop_id, name, pageNum = 1, pageSize = 10 } = req.query
+    const { shop_id, name, page_num = 1, page_size = 10 } = req.query
     try {
       let query_obj = { shop_id }
       if (name) {
         query_obj.name = new RegExp(name, 'i')
       }
       const count = await FoodCategoryModel.find(query_obj).count()
-      let data = await FoodCategoryModel.find(query_obj, '-_id -__v').sort('-id').skip((pageNum - 1) * pageSize).limit(pageSize).lean(true)
+      let data = await FoodCategoryModel.find(query_obj, '-_id -__v').sort('-id').skip((page_num - 1) * page_size).limit(page_size).lean(true)
       // 关联商品名称
       for (const item of data) {
         const food_ids = item.foods.map(food => {
@@ -25,8 +25,8 @@ class FoodCategoryService {
       res.json({
         data: {
           list: data,
-          pageNum,
-          pageSize,
+          page_num,
+          page_size,
           total: count
         }
       })

@@ -28,19 +28,19 @@ class ShopService extends ShopBase {
   }
 
   async shopList (req, res) {
-    const { rn = 10, pn = 1 } = req.query
+    const { page_size = 10, page_num = 1 } = req.query
     const u_id = req.session.u_id
     const queryObj = await getQueryFromUser('u_id', u_id)
 
     try {
-      let shopData = await ShopModel.find(queryObj, '-_id -__v').sort('-id').skip((pn-1) * rn).limit(rn)
+      let shopData = await ShopModel.find(queryObj, '-_id -__v').sort('-id').skip((page_num-1) * page_size).limit(page_size)
       let count = await ShopModel.find(queryObj).count()
       res.json({
         data: {
           list: shopData,
           total: count,
-          pn,
-          rn
+          page_num,
+          page_size
         }
       })
     } catch (err) {
