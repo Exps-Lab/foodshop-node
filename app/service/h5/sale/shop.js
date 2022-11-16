@@ -111,7 +111,7 @@ class ShopService extends ShopBase {
       const shopInfo = await ShopModel.findOne({ id: shop_id }, { admin_uid: 0, _id:0, __v: 0 }).lean(true)
       const [ userLat, userLng ] = current_pos.split(',')
       const { lat, lng } = shopInfo.pos
-      shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`)
+      shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`) || 0
       res.json({
         data: shopInfo
       })
