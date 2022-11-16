@@ -4,12 +4,12 @@ class MenuController {
   menuList (req, res) {
     try {
       _common.validate({
-        pageNum: {
+        page_num: {
           type: 'number',
           convertType: 'number',
           required: false
         },
-        pageSize: {
+        page_size: {
           type: 'number',
           convertType: 'number',
           required: false

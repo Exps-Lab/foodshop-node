@@ -122,12 +122,12 @@ class ShopController {
   async shopList (req, res) {
     try {
       _common.validate({
-        pn: {
+        page_num: {
           type: 'number',
           required: false,
           convertType: 'number'
         },
-        rn: {
+        page_size: {
           type: 'number',
           required: false,
           convertType: 'number'

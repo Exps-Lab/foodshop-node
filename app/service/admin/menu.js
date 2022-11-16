@@ -2,7 +2,7 @@ const MenuModel = require('../../model/admin/menu')
 
 class MenuService {
   async menuList (req, res) {
-    const { pageNum = 1, pageSize = 10 } = req.query
+    const { page_num = 1, page_size = 10 } = req.query
     try {
       const count = await MenuModel.count()
       const data = await MenuModel.aggregate([
@@ -24,17 +24,17 @@ class MenuService {
           rName: 0
         }
       }, {
-        $skip: (pageNum - 1) * pageSize
+        $skip: (page_num - 1) * page_size
       }, {
-        $limit: pageSize
+        $limit: page_size
       }])
       data.forEach(item => {
         item.is_hidden_text = item.is_hidden ? '是' : '否'
       })
       res.json({
         data: {
-          pageNum,
-          pageSize,
+          page_num,
+          page_size,
           total: count,
           list: data
         }

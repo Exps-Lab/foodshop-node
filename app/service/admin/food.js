@@ -6,7 +6,7 @@ const { getQueryFromUser } = require('./user')
 class FoodService {
   // 商品列表
   async foodList (req, res) {
-    const {  pageNum = 1, pageSize = 10, shop_id, food_category_id, name } = req.query
+    const {  page_num = 1, page_size = 10, shop_id, food_category_id, name } = req.query
     const admin_uid = req.session.admin_uid
     const uid_obj = await getQueryFromUser('admin_uid', admin_uid)
     const query_obj = {
@@ -66,18 +66,18 @@ class FoodService {
           }
         },
         {
-          $skip: (pageNum - 1) * pageSize
+          $skip: (page_num - 1) * page_size
         },
         {
-          $limit: pageSize
+          $limit: page_size
         }
       ])
       res.json({
         data: {
           list: data,
           total: count,
-          pageNum,
-          pageSize
+          page_num,
+          page_size
         }
       })
     } catch (err) {
