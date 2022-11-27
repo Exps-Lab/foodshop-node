@@ -11,6 +11,12 @@ CommonConf.mongoose = {
   }
 }
 
+// redis配置
+CommonConf.redis = {
+  host: '127.0.0.1',
+  port: '6379',
+}
+
 // logger配置
 CommonConf.customLogger = {
   path: {

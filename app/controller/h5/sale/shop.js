@@ -63,6 +63,30 @@ class ShopController {
     }
     await ShopService.searchShopGoodsService(req, res)
   }
+
+  // 创建临时购物袋
+  async addShoppingBag (req, res) {
+    try {
+      _common.validate({
+        shop_id: {
+          type: 'number',
+          convertType: 'number',
+        },
+        chose_goods_list: {
+          type: 'array',
+          itemType: 'object',
+        }
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await ShopService.addShoppingBagService(req, res)
+  }
 }
 
 module.exports = new ShopController()

@@ -21,4 +21,6 @@ router.get('/noauth/shop/detail', ShopController.shopBaseInfo)
 router.get('/noauth/shop/getGoods', ShopController.getShopGoods)
 router.get('/noauth/shop/searchGoods', ShopController.searchShopGoods)
 
+// 创建购物袋
+router.post('/auth/shop/shoppingBag/add', ShopController.addShoppingBag)
 module.exports = router

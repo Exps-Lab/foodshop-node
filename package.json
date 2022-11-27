@@ -21,7 +21,8 @@
     "mongoose-sequence": "^5.3.1",
     "node-fetch": "^2.6.7",
     "parameter": "^3.6.0",
-    "qiniu": "^7.7.0"
+    "qiniu": "^7.7.0",
+    "redis": "^4.5.0"
   },
   "devDependencies": {
     "chalk": "^4.1.2",

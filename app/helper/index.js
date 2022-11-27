@@ -35,8 +35,19 @@ function validate (rule={}, req) {
   }
 }
 
+/**
+ * 生成uuid
+ * @return {string}
+ */
+function uuid () {
+  const random = (Math.random() * Math.pow(2, 32)).toString(36);
+  const timestamp = new Date().getTime();
+  return 'u-' + timestamp + '-' + random;
+}
+
 module.exports = {
   formatTime,
   validate,
   CtoPin,
+  uuid,
 }
