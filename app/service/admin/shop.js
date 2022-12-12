@@ -135,7 +135,7 @@ class ShopService extends ShopBase {
 
   async getCityInfoService (req, res) {
     try {
-      const data = await this.cityBase.getCityInfo()
+      const data = await this.cityBase.getCityInfo(req)
       res.json({
         data
       })

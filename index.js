@@ -25,6 +25,6 @@ app.use(Object.values(middleware))
 // 加载路由模块
 RouterMap(app)
 
-app.listen(3000, () => {
+app.listen(3000, '0.0.0.0', () => {
   console.log(`Example app listening on port 3000`)
 })
