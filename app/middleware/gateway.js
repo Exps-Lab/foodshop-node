@@ -24,11 +24,12 @@ const handleSession = (req, res, next) => {
   const sessionKey = sessionConf[moduleName]?.name
   const cookie = cookies[sessionKey]?.split(/[:.]/)[1]
 
-  if (path.includes('/auth/') && sessionID !== cookie) {
+  if (path.includes('/auth/') && (!sessionID || !cookie || (sessionID !== cookie))) {
     res.json({
       code: 10002,
       msg: '[Illegal Token]'
     })
+    return
   }
   // API格式未区分auth时，打印warning日志
   if (!/(\/auth\/)|(\/noauth\/)/.test(path)) {

@@ -16,7 +16,7 @@ require('./app/global')
 // 加载插件
 app.use(cookieParser())
 app.use('/admin', session(sessionConf['admin']))
-app.use('/h5/user', session(sessionConf['h5']))
+app.use('/h5', session(sessionConf['h5']))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 // 加载中间件

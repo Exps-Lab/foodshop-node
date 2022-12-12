@@ -48,16 +48,20 @@ class BasePosClass extends BaseClass {
 
   // 获取真实ip
   async getRemoteAddress (req) {
-    let ip = ''
-    try {
-      ip = await _common.request('https://ifconfig.me/ip')
-    } catch(e) {
-      ip =
-        req.headers['X-Forwarded-For'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress
-    }
+    // try {
+    //   ip = await _common.request('https://ifconfig.me/ip')
+    // } catch(e) {
+    //   ip =
+    //     req.headers['X-Forwarded-For'] ||
+    //     req.connection.remoteAddress ||
+    //     req.socket.remoteAddress ||
+    //     req.connection.socket.remoteAddress
+    // }
+    const ip =
+      req.headers['X-Forwarded-For'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress
     return ip
   }
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "supervisor -p 2000 index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "sh build/build.sh"
   },
   "keywords": [
     "express"
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "chalk": "^4.1.2",
+    "ssh2": "^1.11.0",
     "supervisor": "^0.12.0"
   }
 }
