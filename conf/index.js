@@ -4,11 +4,17 @@ const CommonConf = {}
 
 // mongoose配置
 CommonConf.mongoose = {
-  url: 'mongodb://127.0.0.1:27017/elm_db',
+  url: 'mongodb://127.0.0.1:28017/elm_db',
   options: {
     useUnifiedTopology: true,
     useFindAndModify: false,
   }
+}
+
+// redis配置
+CommonConf.redis = {
+  host: '127.0.0.1',
+  port: '6379',
 }
 
 // logger配置

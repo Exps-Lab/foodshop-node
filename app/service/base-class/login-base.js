@@ -33,14 +33,14 @@ class LoginBase {
     }
   }
 
-  addUser (req, res) {
+  async addUser (req, res) {
     const { username, password } = req.body
     let comData = {
       username,
       c_time: Date.now(),
     }
     if (this.origin === 'admin') {
-      const { role, role_name } = this.getUserRole()
+      const { role, role_name } = await this.getUserRole()
       comData = Object.assign(comData, {
         role,
         role_name

@@ -1,0 +1,48 @@
+#!/usr/local/bin/bash
+
+# 测试mongodb服务是否启动
+mongo --port 28017 --eval "db.stats()"
+if [ $? -ne 0 ]; then
+    echo "[error]mongodb not running"
+    exit 1
+fi
+
+# 物理全量备份
+Host="127.0.0.1:28017"
+DBName="elm_db"
+TimeNow=`date "+%Y-%m-%d_%H:%M:%S"`
+BackendPath="/home/website/db-backend"
+LogPath="/home/website/db-backend/$TimeNow/dblog.log"
+
+# 日志输出函数
+function insertLog(){
+  echo [LOG] - $TimeNow ${1} >> $LogPath
+}
+
+# begin
+mkdir "$BackendPath/$TimeNow"
+touch $LogPath
+insertLog "开始全量备份..."
+
+insertLog "备份文件路径: $BackendPath/$TimeNow"
+# 全量备份，定时任务15天备份一次，最多保留30天
+mongodump -h $Host -d $DBName -o "$BackendPath/$TimeNow" --gzip
+
+insertLog "检查已有备份时间，删除超过30天没有修改过的文件"
+find $BackendPath -mtime +30 | xargs rm -rf
+
+# 备份完发送邮件通知
+insertLog "备份完成，发送邮件通知"
+mail -s "exp-shopping网站数据库备份通知_$TimeNow:" haihanh2@163.com,1723882444@qq.com < $LogPath
+
+insertLog "全量备份完成！"
+exit 0
+END
+
+# 全量覆盖恢复数据库
+#mongorestore -h $Host -d $DBName --dir $BackendPath --gzip --drop
+
+
+
+
+

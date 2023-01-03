@@ -7,38 +7,39 @@ class TestController extends BasePosClass {
     this.name = 'hello world'
   }
 
-  showTest (req, res) {
-    try {
-      _common.validate({
-        name: 'string',
-      }, req)
-    } catch (err) {
-      res.json({
-        code: 0,
-        msg: '[Request Params Error]',
-        errLog: err,
-      })
-      return
-    }
-    TestService.showTest(req, res)
+  async showTest (req, res) {
+    const data = await _common.RedisClient.set('name', 111, {
+      EX: 5,
+      NX: true,
+    })
+    res.json({
+      data
+    })
+    // try {
+    //   _common.validate({
+    //     name: 'string',
+    //   }, req)
+    // } catch (err) {
+    //   res.json({
+    //     code: 0,
+    //     msg: '[Request Params Error]',
+    //     errLog: err,
+    //   })
+    //   return
+    // }
+    // TestService.showTest(req, res)
   }
 
   async sessionDemo (req, res) {
-    const pos = await new BasePosClass().getPosByIp(req)
+    const { id } = req.query
+    const tempData = await _common.RedisClient.hGetAll(`sale:shoppingBag:112131:u-${id}`)
+    const data = {
+      shop_id: tempData.shop_id,
+      choseGoods: JSON.parse(tempData.choseGoods)
+    }
     res.json({
-      data: pos
+      data
     })
-    // let { counter } = req.session;
-    // if (!counter) {
-    //   req.session.counter = 1
-    //   res.end('welcome to the session demo. try to refresh this page!')
-    // } else {
-    //   req.session.counter += 1
-    //   res.setHeader('Content-Type', 'text/html')
-    //   res.write('<p>views: ' + req.session.counter + '</p>')
-    //   res.write('<p>session expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
-    //   res.end()
-    // }
   }
 
   getText () {

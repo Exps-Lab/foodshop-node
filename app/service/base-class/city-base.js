@@ -32,16 +32,9 @@ class cityBase extends BasePosClass {
    */
   async getAllCity (req, res) {
     try {
-      const cityData = await this.getAllCityData()
-      res.json({
-        data: cityData
-      })
+      return await this.getAllCityData() || {}
     } catch (err) {
-      res.json({
-        code: 20002,
-        msg: '获取城市失败，请重试',
-        errLog: err
-      })
+      throw new Error(err)
     }
   }
 

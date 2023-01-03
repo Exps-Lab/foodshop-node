@@ -10,12 +10,12 @@ class FoodCategoryController {
           convertType: 'number'
         },
         name: 'string?',
-        pageNum: {
+        page_num: {
           type: 'number',
           convertType: 'number',
           required: false
         },
-        pageSize: {
+        page_size: {
           type: 'number',
           convertType: 'number',
           required: false

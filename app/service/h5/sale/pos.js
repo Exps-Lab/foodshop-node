@@ -61,6 +61,14 @@ class commonService extends PosBase {
       }
     })
   }
+
+  // 根据ip获取定位
+  async getPosByIpService (req, res) {
+    let posData = await this.getPosByIp(req)
+    res.json({
+      data: posData
+    })
+  }
 }
 
 module.exports = new commonService()
