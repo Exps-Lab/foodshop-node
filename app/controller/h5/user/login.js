@@ -42,6 +42,14 @@ class MainUserController {
     }
     UserService.login(req, res)
   }
+
+  logout (req, res) {
+    UserService.logout(req, res)
+  }
+
+  getUserInfo (req, res) {
+    UserService.getUserInfo(req, res)
+  }
 }
 
 module.exports = new MainUserController()

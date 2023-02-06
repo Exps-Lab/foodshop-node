@@ -210,12 +210,12 @@ class ShopService extends ShopBase {
   async addShoppingBagService (req, res) {
     try {
       const { RedisClient, uuid } = _common
-      // const { u_id } = req.session
+      const { u_id } = req.session
       const { shop_id, chose_goods_list } = req.body
 
       // const ShoppingBagKey = `sale:shoppingBag:${u_id}:${uuid()}`
       const expireTime = 15 * 60 // 购物袋有效期15分钟
-      const ShoppingBagKey = `${shoppingBagPreKey}:112131:${uuid()}`
+      const ShoppingBagKey = `${shoppingBagPreKey}:${u_id}:${uuid()}`
       const choseGoodsArr = [...Object.entries({
         shop_id,
         choseGoods: JSON.stringify(chose_goods_list)

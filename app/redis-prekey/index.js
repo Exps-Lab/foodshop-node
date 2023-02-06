@@ -3,6 +3,10 @@
 // 购物袋
 const shoppingBagPreKey = 'sale:shoppingBag'
 
+// h5 User
+const h5UserInfoPreKey = 'user:h5:userInfo'
+
 module.exports = {
-  shoppingBagPreKey
+  shoppingBagPreKey,
+  h5UserInfoPreKey
 }

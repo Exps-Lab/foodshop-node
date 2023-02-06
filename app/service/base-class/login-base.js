@@ -1,6 +1,7 @@
 const H5UserModel  = require('../../model/h5/user/login')
 const AdminUserModel  = require('../../model/admin/user')
 const RoleModel = require('../../model/admin/role')
+const { h5UserInfoPreKey } = require('../../redis-prekey')
 
 class LoginBase {
   // origin: admin/h5
@@ -33,6 +34,7 @@ class LoginBase {
     }
   }
 
+  // 添加用户(h5/admin)
   async addUser (req, res) {
     const { username, password } = req.body
     let comData = {
@@ -54,6 +56,15 @@ class LoginBase {
       const { u_id } = data
       req.session.username = username
       req.session.u_id = u_id
+
+      // h5用户创建时添加二级redis缓存
+      if (this.origin === 'h5') {
+        this.setH5UserRedis(u_id, {
+          u_id,
+          ...comData
+        })
+      }
+
       res.json({
         data: comData,
         msg: 'login success'
@@ -61,9 +72,15 @@ class LoginBase {
     })
   }
 
+  // 判断用户是否存在(h5/admin)
   checkUser (req, res, resData) {
     const { password } = req.body
     const { username, u_id } = resData
+
+    let comData = {
+      username,
+      c_time: Date.now(),
+    }
 
     if (password === resData.password) {
       req.session.username = username
@@ -72,6 +89,14 @@ class LoginBase {
         data: resData,
         msg: 'login success'
       })
+
+      // h5用户创建时添加二级redis缓存
+      if (this.origin === 'h5') {
+        this.setH5UserRedis(u_id, {
+          u_id,
+          ...comData
+        })
+      }
     } else {
       res.json({
         code: 20001,
@@ -80,8 +105,11 @@ class LoginBase {
     }
   }
 
-  baseLogout (req, res) {
-    req.session.destroy()
+  // 登出
+  async baseLogout (req, res) {
+    const { u_id } = req.session
+    await this.delH5UserRedis(u_id)
+    await req.session.destroy()
     res.json({
       msg: 'logout success'
     })
@@ -94,7 +122,7 @@ class LoginBase {
     return code === sessionCode
   }
 
-  // 获取普通用户角色配置
+  // 获取admin普通用户角色配置
   async getUserRole () {
     const adminRole = await RoleModel.find().lean()
     for (let i=0; i<adminRole.length; i++) {
@@ -103,6 +131,46 @@ class LoginBase {
         return adminRole[i]
       }
     }
+  }
+
+  // 设置h5用户redis数据
+  setH5UserRedis (u_id, data) {
+    const { RedisClient } = _common
+    try {
+      // h5UserInfoKey = `user:h5:userInfo:${u_id}`
+      const expireTime = 24 * 60 * 60 // 用户信息效期24小时
+      const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
+
+      // 事务处理添加并设置过期时间
+      const redisRes = RedisClient
+        .multi()
+        .hSet(h5UserInfoKey, data)
+        .expire(h5UserInfoKey, expireTime)
+        .exec()
+    } catch (err) {
+      console.log(err)
+      return err
+    }
+  }
+
+  // 获取h5用户redis数据
+  async getH5UserRedis (u_id) {
+    const { RedisClient } = _common
+    return Promise.resolve().then(async () => {
+      const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
+
+      const userData = await RedisClient.hGetAll(h5UserInfoKey)
+      return userData.u_id ? userData : null
+    })
+  }
+
+  // 删除h5用户redis数据
+  async delH5UserRedis (u_id) {
+    const { RedisClient } = _common
+    return Promise.resolve().then(async () => {
+      const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
+      return await RedisClient.del(h5UserInfoKey)
+    })
   }
 }
 

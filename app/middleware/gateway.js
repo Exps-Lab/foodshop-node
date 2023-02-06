@@ -18,13 +18,17 @@ const handleCros = (req, res, next) => {
 }
 
 // session拦截校验
+// [note] 处理空白session的情况
 const handleSession = (req, res, next) => {
-  const { path, sessionID, cookies } = req
+  const { path, sessionID, cookies, session } = req
   const moduleName = path.split('/')[1]
   const sessionKey = sessionConf[moduleName]?.name
   const cookie = cookies[sessionKey]?.split(/[:.]/)[1]
 
-  if (path.includes('/auth/') && (!sessionID || !cookie || (sessionID !== cookie))) {
+  if (
+    path.includes('/auth/') &&
+    ( session.u_id === undefined || (!sessionID || !cookie || (sessionID !== cookie)))
+  ) {
     res.json({
       code: 10002,
       msg: '[Illegal Token]'
