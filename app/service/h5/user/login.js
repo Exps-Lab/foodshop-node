@@ -19,6 +19,7 @@ class LoginService extends LoginBase {
   login (req, res) {
     this.baseLogin(req, res)
   }
+
   logout (req, res) {
     this.baseLogout(req, res)
   }

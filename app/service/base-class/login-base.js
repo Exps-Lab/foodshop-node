@@ -135,18 +135,14 @@ class LoginBase {
 
   // 设置h5用户redis数据
   setH5UserRedis (u_id, data) {
-    const { RedisClient } = _common
+    const { RedisInstance } = _common
     try {
       // h5UserInfoKey = `user:h5:userInfo:${u_id}`
       const expireTime = 24 * 60 * 60 // 用户信息效期24小时
       const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
 
-      // 事务处理添加并设置过期时间
-      const redisRes = RedisClient
-        .multi()
-        .hSet(h5UserInfoKey, data)
-        .expire(h5UserInfoKey, expireTime)
-        .exec()
+      // 添加并设置过期时间
+      return RedisInstance.hSet(h5UserInfoKey, data, '', expireTime)
     } catch (err) {
       console.log(err)
       return err
@@ -155,21 +151,21 @@ class LoginBase {
 
   // 获取h5用户redis数据
   async getH5UserRedis (u_id) {
-    const { RedisClient } = _common
+    const { RedisInstance } = _common
     return Promise.resolve().then(async () => {
       const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
 
-      const userData = await RedisClient.hGetAll(h5UserInfoKey)
+      const userData = await RedisInstance.hGetAll(h5UserInfoKey)
       return userData.u_id ? userData : null
     })
   }
 
   // 删除h5用户redis数据
   async delH5UserRedis (u_id) {
-    const { RedisClient } = _common
+    const { RedisInstance } = _common
     return Promise.resolve().then(async () => {
       const h5UserInfoKey = `${h5UserInfoPreKey}:${u_id}`
-      return await RedisClient.del(h5UserInfoKey)
+      return await RedisInstance.del(h5UserInfoKey)
     })
   }
 }

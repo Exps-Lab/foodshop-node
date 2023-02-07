@@ -8,10 +8,10 @@ class TestController extends BasePosClass {
   }
 
   async showTest (req, res) {
-    const data = await _common.RedisClient.set('name', 111, {
-      EX: 5,
-      NX: true,
-    })
+    const data = await _common.RedisInstance.hSet('aaa', {
+      name: 'aa',
+      age: 12
+    }, '', 1001)
     res.json({
       data
     })
@@ -32,11 +32,8 @@ class TestController extends BasePosClass {
 
   async sessionDemo (req, res) {
     const { id } = req.query
-    const tempData = await _common.RedisClient.hGetAll(`sale:shoppingBag:112131:u-${id}`)
-    const data = {
-      shop_id: tempData.shop_id,
-      choseGoods: JSON.parse(tempData.choseGoods)
-    }
+    const data = await _common.RedisInstance.hDel('aaa', 'age')
+    console.log(data)
     res.json({
       data
     })
