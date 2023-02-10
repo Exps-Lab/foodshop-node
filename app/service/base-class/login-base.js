@@ -10,6 +10,7 @@ class LoginBase {
       throw new Error('origin是必传项!')
     }
     this.origin = origin
+    this.h5UserInfoPreKey = h5UserInfoPreKey
     this.UserModel = this.origin === 'h5' ? H5UserModel : AdminUserModel
   }
 
@@ -39,6 +40,7 @@ class LoginBase {
     const { username, password } = req.body
     let comData = {
       username,
+      avatar: '',
       c_time: Date.now(),
     }
     if (this.origin === 'admin') {
@@ -75,10 +77,11 @@ class LoginBase {
   // 判断用户是否存在(h5/admin)
   checkUser (req, res, resData) {
     const { password } = req.body
-    const { username, u_id } = resData
+    const { username, u_id, avatar } = resData
 
     let comData = {
       username,
+      avatar,
       c_time: Date.now(),
     }
 

@@ -12,15 +12,17 @@ class Redis {
     this.redisClient = redis.createClient(redisConf)
     this.redisClient.connect()
 
-    this.redisClient.on('ready', function (error) {
+    this.redisClient.on('ready', function () {
       console.log(
         chalk.cyan('redis is ready')
       );
+      _common.WebLogger.info('[redis]', 'redis is ready');
     })
     this.redisClient.on('error', function (error) {
       console.error(
         chalk.red('Error in redis: ' + error)
       );
+      _common.WebLogger.error('[redis]', error);
     })
   }
   // 设置获取时间
