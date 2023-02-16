@@ -31,8 +31,7 @@ class UserInfoService extends LoginBase {
         returnData = await UserModel.findOne({username}, filterConf).lean(true)
       }
       res.json({
-        data: returnData,
-        msg: 'succeed!'
+        data: returnData
       })
     } catch (err) {
       res.json({
@@ -73,8 +72,7 @@ class UserInfoService extends LoginBase {
       ).lean(true)
       await RedisInstance.hSet(`${this.h5UserInfoPreKey}:${u_id}`, key, value)
       return({
-        data: resData,
-        msg: 'succeed!'
+        data: resData
       })
     } catch (err) {
       return({

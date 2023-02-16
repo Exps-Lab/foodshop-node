@@ -74,7 +74,7 @@ class Redis {
       return err
     }
   }
-  async exit (key) {
+  async exists (key) {
     if (!key) {
       return 'key必须的'
     }
