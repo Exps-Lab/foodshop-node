@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const UserController = require('../../../controller/h5/user/login')
 const UserInfoController = require('../../../controller/h5/user/info')
+const UserAddressController = require('../../../controller/h5/user/address')
 
 // userLogin
 router.get('/noauth/getCapture', UserController.getCapture)
@@ -13,5 +14,12 @@ router.post('/auth/logout', UserController.logout)
 router.get('/auth/getUserInfo', UserInfoController.getUserInfo)
 router.post('/auth/updateUserName', UserInfoController.updateUserName)
 router.post('/auth/updateUserAvatar', UserInfoController.updateUserAvatar)
+
+// userAddress
+router.get('/auth/address/list', UserAddressController.getAddressList)
+router.get('/auth/address/detail', UserAddressController.getAddressDetail)
+router.post('/auth/address/add', UserAddressController.addAddress)
+router.post('/auth/address/update', UserAddressController.updateAddress)
+router.post('/auth/address/delete', UserAddressController.deleteAddress)
 
 module.exports = router

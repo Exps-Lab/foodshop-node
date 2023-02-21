@@ -45,9 +45,23 @@ function uuid () {
   return 'u-' + timestamp + '-' + random;
 }
 
+/**
+ * 加密手机号中间四位
+ * @param phone
+ * @returns {string}
+ */
+function cryptoPhone (phone = null) {
+  if (!phone) {
+    throw new Error('手机号是必传的')
+  }
+  const strPhone = phone.toString()
+  return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
+}
+
 module.exports = {
   formatTime,
   validate,
   CtoPin,
   uuid,
+  cryptoPhone
 }
