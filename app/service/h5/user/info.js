@@ -70,7 +70,7 @@ class UserInfoService extends LoginBase {
         },
         { new: true }
       ).lean(true)
-      await RedisInstance.hSet(`${this.h5UserInfoPreKey}:${u_id}`, key, value)
+      await RedisInstance.hSet(`${this.h5UserInfoPreKey.key}:${u_id}`, key, value)
       return({
         data: resData
       })

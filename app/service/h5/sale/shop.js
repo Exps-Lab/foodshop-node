@@ -209,13 +209,13 @@ class ShopService extends ShopBase {
   // 创建临时购物袋
   async addShoppingBagService (req, res) {
     try {
-      const { RedisInstance, uuid } = _common
+      const { RedisInstance } = _common
       const { u_id } = req.session
       const { shop_id, chose_goods_list } = req.body
 
-      // const ShoppingBagKey = `sale:shoppingBag:${u_id}:${uuid()}`
-      const expireTime = 15 * 60 // 购物袋有效期15分钟
-      const ShoppingBagKey = `${shoppingBagPreKey}:${u_id}:${uuid()}`
+      // const ShoppingBagKey = `sale:shoppingBag:${u_id}`
+      const { key, expireTime } = shoppingBagPreKey
+      const ShoppingBagKey = `${key}:${u_id}`
       const choseGoodsArr = {
         shop_id,
         choseGoods: chose_goods_list

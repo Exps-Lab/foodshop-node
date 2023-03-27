@@ -1,4 +1,5 @@
 const UserAddressModel  = require('../../../model/h5/user/address')
+const { h5UserAddressPreKey } = require('../../../redis-prekey')
 
 class UserAddressService {
   constructor() {
@@ -34,11 +35,28 @@ class UserAddressService {
     }, {})
   }
 
+  getRedisInfo (u_id) {
+    const { key, expireTime } = h5UserAddressPreKey
+    return {
+      key: `${key}:${u_id}`,
+      expireTime
+    }
+  }
+
   // 地址列表
   async getUserAddressListService (req, res) {
     const { u_id } = req.session
+    const { RedisInstance } = _common
+    const { key } = this.getRedisInfo(u_id)
+    let data = []
     try {
-      const data = await UserAddressModel.find({ u_id }).lean(true) || []
+      // 优先从redis获取
+      const redisAddressData = await RedisInstance.hGetAll(key)
+      if (redisAddressData !== null) {
+        data = Object.values(redisAddressData).map(address => JSON.parse(address))
+      } else {
+        data = await UserAddressModel.find({ u_id }).lean(true) || []
+      }
       // 加密手机号
       const transData = data.map(address => {
         address.phone = _common.cryptoPhone(address.phone)
@@ -58,9 +76,14 @@ class UserAddressService {
 
   // 新增地址
   async addUserAddressService (req, res) {
+    const { u_id } = req.session
+    const { RedisInstance } = _common
     const reqData = this.createRequestData(req)
+    const { key, expireTime } = this.getRedisInfo(u_id)
     try {
       const data = await UserAddressModel.create(reqData)
+      // [note] hash结构缓存地址信息，redisKey -> addressKey -> addressInfo（字符串）
+      await RedisInstance.hSet(key, data.id, JSON.stringify(reqData), expireTime)
       res.json({
         data
       })
@@ -77,8 +100,11 @@ class UserAddressService {
   async deleteUserAddressService (req, res) {
     const { u_id } = req.session
     const { address_id } = req.body
+    const { RedisInstance } = _common
+    const { key } = this.getRedisInfo(u_id)
     try {
       const data = await UserAddressModel.deleteOne({ u_id, id: address_id })
+      await RedisInstance.hDel(key, String(address_id))
       res.json({
         data
       })
@@ -95,6 +121,8 @@ class UserAddressService {
   async updateUserAddressService (req, res) {
     const { u_id } = req.session
     const { address_id } = req.body
+    const { RedisInstance } = _common
+    const { key } = this.getRedisInfo(u_id)
     const reqData = this.createRequestData(req)
     try {
       const data = await UserAddressModel.findOneAndUpdate(
@@ -102,6 +130,7 @@ class UserAddressService {
         reqData,
         { new: true }
       ).lean(true)
+      await RedisInstance.hSet(key, data.id, JSON.stringify(reqData))
       res.json({
         data
       })
@@ -118,9 +147,17 @@ class UserAddressService {
   async getUserAddressDetailService (req, res) {
     const { u_id } = req.session
     const { address_id } = req.query
-    const reqData = this.createRequestData(req)
+    const { RedisInstance } = _common
+    const { key } = this.getRedisInfo(u_id)
+    let data = {}
     try {
-      const data = await UserAddressModel.findOne({ u_id, id: address_id }, '-__v -_id').lean(true)
+      // 优先从redis获取
+      const redisAddressData = await RedisInstance.hGet(key, String(address_id))
+      if (redisAddressData !== null) {
+        data = JSON.parse(redisAddressData)
+      } else {
+        data = await UserAddressModel.findOne({ u_id, id: address_id }, '-__v -_id').lean(true)
+      }
       res.json({
         data
       })
