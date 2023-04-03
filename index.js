@@ -6,12 +6,14 @@ const RouterMap = require('./app/router/index')
 const middleware = require('./app/middleware')
 const { sessionConf } = require('./conf/index')
 
+// 加载全局方法
+require('./app/global')
+// 加载rabbitMQ配置
+require('./rabbitMQ/initMQ')
 // 加载数据库配置
 require('./mongoDB/index')
 // 加载redis配置
 require('./redis/index')
-// 加载全局方法
-require('./app/global')
 
 // 加载插件
 app.use(cookieParser())
