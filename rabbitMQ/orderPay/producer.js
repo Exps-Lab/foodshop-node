@@ -5,8 +5,8 @@ const MQConstruct = require('../index')
 // 目前处理生成订单超时未支付自动取消订单的场景
 // 利用队列的ttl属性（消息有效期）和死信死信交换机处理
 class OrderPayProducer extends MQConstruct {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     // [note] 获取连接实例
     this.initMQ().then(connection => {
       this.connInstance = connection

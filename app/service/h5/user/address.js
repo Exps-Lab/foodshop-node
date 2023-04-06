@@ -82,8 +82,12 @@ class UserAddressService {
     const { key, expireTime } = this.getRedisInfo(u_id)
     try {
       const data = await UserAddressModel.create(reqData)
+      const { id } = data
       // [note] hash结构缓存地址信息，redisKey -> addressKey -> addressInfo（字符串）
-      await RedisInstance.hSet(key, data.id, JSON.stringify(reqData), expireTime)
+      await RedisInstance.hSet(key, id, JSON.stringify({
+        id,
+        ...reqData
+      }), expireTime)
       res.json({
         data
       })

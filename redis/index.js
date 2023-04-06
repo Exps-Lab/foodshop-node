@@ -114,7 +114,9 @@ class Redis {
       return 'key必须的'
     }
     try {
-      return await this.redisClient.hGetAll(key)
+      const res = await this.redisClient.hGetAll(key)
+      // [note] 处理返回空对象(object.create(null))
+      return Object.keys(res).length ? res : null
     } catch (err) {
       return err
     }

@@ -4,8 +4,8 @@ const MQConstruct = require('../index')
 
 // 消费死信交换机推送消息
 class OrderPayConsumer extends MQConstruct {
-  constructor (props) {
-    super(props);
+  constructor () {
+    super()
     // [note] 获取连接实例
     this.initMQ().then(connection => {
       this.connInstance = connection
