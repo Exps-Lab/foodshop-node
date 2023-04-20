@@ -1,6 +1,7 @@
 const H5UserModel  = require('../../model/h5/user/login')
 const AdminUserModel  = require('../../model/admin/user')
 const RoleModel = require('../../model/admin/role')
+const AccountService = require('../../service/h5/user/account')
 const { h5UserInfoPreKey } = require('../../redis-prekey')
 
 class LoginBase {
@@ -54,16 +55,18 @@ class LoginBase {
     this.UserModel.create({
       ...comData,
       password
-    }).then(data => {
+    }).then(async data => {
       const { u_id } = data
       req.session.username = username
       req.session.u_id = u_id
 
       // h5用户创建时添加二级redis缓存
       if (this.origin === 'h5') {
+        const moneyData = await AccountService.initAccountMoney(u_id)
         this.setH5UserRedis(u_id, {
           u_id,
-          ...comData
+          ...comData,
+          ...moneyData
         })
       }
 
