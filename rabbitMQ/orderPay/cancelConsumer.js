@@ -20,8 +20,8 @@ class OrderPayConsumer extends MQConstruct {
     const { DLXExchange, DLXRoutingKey } = this.orderPayDLXKeys
 
     const channel = await this.connInstance.createChannel()
-    await channel.assertExchange(DLXExchange, 'direct', { durable: true });
-    const { queue } = await channel.assertQueue(consumerQueueName);
+    await channel.assertExchange(DLXExchange, 'direct', { durable: true })
+    const { queue } = await channel.assertQueue(consumerQueueName)
 
     // [note] 绑定DLX和消费者实际消费的队列
     await channel.bindQueue(queue, DLXExchange, DLXRoutingKey)
@@ -29,15 +29,17 @@ class OrderPayConsumer extends MQConstruct {
     // Listener
     await channel.consume(queue, (msg) => {
       if (msg !== null) {
-        console.log(`received time: ${new Date()}`);
-        console.log('received data:', msg.content.toString());
+        console.log(`received time: ${new Date()}`)
+        // 接收json字符串
+        const { name } = JSON.parse(msg.content.toString())
+        console.log('post data:', name)
 
         // [note] 消费者发送ack确认收到消息
-        channel.ack(msg);
+        channel.ack(msg)
       } else {
-        console.log('消费者收取消息失败！');
+        console.log('消费者收取消息失败！')
       }
-    });
+    })
   }
 }
 

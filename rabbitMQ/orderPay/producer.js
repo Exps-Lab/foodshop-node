@@ -33,7 +33,8 @@ class OrderPayProducer extends MQConstruct {
   }
   // 产出消息
   async productMessage(message = '') {
-    const messageStr = message || `post time: ${new Date()}`
+    const transMessage = typeof message === 'object' ? JSON.stringify(message) : message
+    const messageStr = transMessage || `post time: ${new Date()}`
     await this.channel.sendToQueue(this.expiredQueue.queue, Buffer.from(messageStr))
   }
 }

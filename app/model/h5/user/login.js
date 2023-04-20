@@ -13,6 +13,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  account: {
+    type: Number,
+    required: true,
+    default: 100
+  },
   avatar: String,
   c_time: Number,
 });

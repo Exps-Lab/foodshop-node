@@ -224,7 +224,10 @@ class ShopService extends ShopBase {
       // 事务处理添加并设置过期时间
       await RedisInstance.set(ShoppingBagKey, choseGoodsArr, expireTime)
       // [test] 发送有效期15分钟的支付消息，超时取消订单
-      await orderPayProducer.productMessage()
+      const mesStr = JSON.stringify({
+        name: 'aaa'
+      })
+      await orderPayProducer.productMessage(mesStr)
 
       res.json({
         data: ShoppingBagKey

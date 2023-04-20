@@ -1,5 +1,5 @@
 //init MQ
 
-require('./orderPay/consumer')
+require('./orderPay/cancelConsumer')
 require('./orderPay/producer')
 
