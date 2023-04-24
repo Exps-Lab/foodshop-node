@@ -21,6 +21,7 @@ app.use('/admin', session(sessionConf['admin']))
 app.use('/h5', session(sessionConf['h5']))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
 // 加载中间件
 app.use(Object.values(middleware))
 

@@ -10,19 +10,22 @@ class MQConstruct {
       DLXRoutingKey: 'orderPayMessage'
     }
   }
-  static connInstance = null
+  static _connInstance = null
   async initMQ () {
-    if (MQConstruct.connInstance === null) {
-      MQConstruct.connInstance = new Promise(resolve => {
-        resolve(amqplib.connect('amqp://localhost:5672'))
-      }).then(conn => {
-        console.log(
-          chalk.blue('rabbitMQ连接成功')
-        );
-        return conn
-      })
+    if (MQConstruct._connInstance === null) {
+      MQConstruct._connInstance = this.getConn()
     }
-    return MQConstruct.connInstance
+    return MQConstruct._connInstance
+  }
+  async getConn () {
+    return new Promise(resolve => {
+      resolve(amqplib.connect('amqp://localhost:5672'))
+    }).then(conn => {
+      console.log(
+        chalk.blue('rabbitMQ连接成功')
+      );
+      return conn
+    })
   }
 }
 

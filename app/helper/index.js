@@ -1,4 +1,5 @@
 const Parameter = require('parameter');
+const { Snowflake } = require('@sapphire/snowflake')
 const CtoPin = require('./dictionary')
 
 // 处理时间格式
@@ -58,10 +59,18 @@ function cryptoPhone (phone = null) {
   return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
 }
 
+// 雪花算法生成唯一id
+function snowFlake () {
+  const epoch = new Date().getUTCDate()
+  const snowflake = new Snowflake(epoch)
+  return snowflake.generate().toString()
+}
+
 module.exports = {
   formatTime,
   validate,
   CtoPin,
   uuid,
-  cryptoPhone
+  cryptoPhone,
+  snowFlake
 }

@@ -1,6 +1,7 @@
 const AccountModel  = require('../../../model/h5/user/account')
 
 class AccountService {
+  // 初始化创建账户
   async initAccountMoney (u_id) {
     try {
       const params = {
@@ -16,10 +17,21 @@ class AccountService {
       return null
     }
   }
+  // 统一处理获取账户余额
+  async getAccountMoneyHelper (u_id) {
+    if (!u_id) {
+      throw new Error('获取账户必须传入u_id')
+    }
+    try {
+      return await AccountModel.findOne({ u_id }).lean(true)
+    } catch (e) {
+      return null
+    }
+  }
   async getAccountMoney (req, res) {
     const { u_id } = req.session
     try {
-      const data = await AccountModel.findOne({ u_id }).lean(true)
+      const data = await this.getAccountMoneyHelper(u_id)
       res.json({
         data
       })
@@ -35,7 +47,7 @@ class AccountService {
     const { u_id } = req.session
     const { money = 100 } = req.body
     try {
-      const { money: nowMoney } = await AccountModel.findOne({ u_id }).lean(true)
+      const { money: nowMoney } = await this.getAccountMoneyHelper(u_id)
       const data = await AccountModel.findOneAndUpdate({ u_id }, {
         money: nowMoney + money,
         money_modify_time: Date.now(),
