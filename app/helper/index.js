@@ -1,4 +1,5 @@
 const Parameter = require('parameter');
+const { Snowflake } = require('@sapphire/snowflake')
 const CtoPin = require('./dictionary')
 
 // 处理时间格式
@@ -45,9 +46,31 @@ function uuid () {
   return 'u-' + timestamp + '-' + random;
 }
 
+/**
+ * 加密手机号中间四位
+ * @param phone
+ * @returns {string}
+ */
+function cryptoPhone (phone = null) {
+  if (!phone) {
+    throw new Error('手机号是必传的')
+  }
+  const strPhone = phone.toString()
+  return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
+}
+
+// 雪花算法生成唯一id
+function snowFlake () {
+  const epoch = new Date().getUTCDate()
+  const snowflake = new Snowflake(epoch)
+  return snowflake.generate().toString()
+}
+
 module.exports = {
   formatTime,
   validate,
   CtoPin,
   uuid,
+  cryptoPhone,
+  snowFlake
 }

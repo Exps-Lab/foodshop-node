@@ -67,7 +67,8 @@ async function request (url, data, options) {
   // 请求三方api默认status
   if (res?.status !== 200 || (resData.status && resData.status !== 0)) {
     const errText= `http message: ${res.statusText} -- data message: ${resData.message}`
-    _common.WebLogger.error('[REQUEST_ERR]', errText);
+    _common.WebLogger.info('[REQUEST_URL]', url);
+    _common.WebLogger.info('[REQUEST_INFO_ERR]', errText);
     throw new Error(errText)
   }
 

@@ -4,6 +4,7 @@ const foodModel = require('../../../model/admin/food')
 const PosBase = require("../../base-class/pos-base")
 const ShopBase = require('../../base-class/shop-base')
 const { shoppingBagPreKey } = require('../../../redis-prekey')
+const orderPayProducer = require('../../../../rabbitMQ/orderPay/producer')
 
 class ShopService extends ShopBase {
   constructor(props) {
@@ -209,24 +210,24 @@ class ShopService extends ShopBase {
   // 创建临时购物袋
   async addShoppingBagService (req, res) {
     try {
-      const { RedisClient, uuid } = _common
-      // const { u_id } = req.session
+      const { RedisInstance } = _common
+      const { u_id } = req.session
       const { shop_id, chose_goods_list } = req.body
 
-      // const ShoppingBagKey = `sale:shoppingBag:${u_id}:${uuid()}`
-      const expireTime = 15 * 60 // 购物袋有效期15分钟
-      const ShoppingBagKey = `${shoppingBagPreKey}:112131:${uuid()}`
-      const choseGoodsArr = [...Object.entries({
+      // const ShoppingBagKey = `sale:shoppingBag:${u_id}`
+      const { key, expireTime } = shoppingBagPreKey
+      const ShoppingBagKey = `${key}:${u_id}`
+      const choseGoodsArr = {
         shop_id,
-        choseGoods: JSON.stringify(chose_goods_list)
-      })]
-
+        choseGoods: chose_goods_list
+      }
       // 事务处理添加并设置过期时间
-      const redisRes = await RedisClient
-        .multi()
-        .hSet(ShoppingBagKey, choseGoodsArr)
-        .expire(ShoppingBagKey, expireTime)
-        .exec()
+      await RedisInstance.set(ShoppingBagKey, choseGoodsArr, expireTime)
+      // [test] 发送有效期15分钟的支付消息，超时取消订单
+      const mesStr = JSON.stringify({
+        name: 'aaa'
+      })
+      await orderPayProducer.productMessage(mesStr)
 
       res.json({
         data: ShoppingBagKey

@@ -1,6 +1,11 @@
 const UserService = require('../../../service/h5/user/login')
+const BaseClass = require('../../../service/base-class/base')
 
-class MainUserController {
+class MainUserController extends BaseClass {
+  constructor() {
+    super();
+    this.uploadToken = this.uploadToken.bind(this)
+  }
   // 401 auth 用户名密码校验测试
   // 写死 用户名：test 密码：test
   authDemo (req, res) {
@@ -41,6 +46,18 @@ class MainUserController {
       return
     }
     UserService.login(req, res)
+  }
+
+  logout (req, res) {
+    UserService.logout(req, res)
+  }
+
+  getUserInfo (req, res) {
+    UserService.getUserInfo(req, res)
+  }
+
+  uploadToken (req, res) {
+    this.getUploadToken(req, res)
   }
 }
 
