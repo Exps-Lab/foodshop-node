@@ -59,6 +59,10 @@ function cryptoPhone (phone = null) {
   return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
 }
 
+function generateOrderNumber() {
+
+}
+
 // 雪花算法生成唯一id
 function snowFlake () {
   const epoch = new Date().getUTCDate()

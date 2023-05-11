@@ -10,27 +10,49 @@ class ShopBase extends PosBase {
   // 获取筛选后的商铺列表
   // 支持筛选：current_pos当前位置(lat, lng)，商铺类型(shop_type)
   async getFilterShopList (filterParams) {
-    const { distance, current_pos, shop_type } = filterParams
-    let filterData = null
+    const { distance, current_pos, page_num = 1, page_size = 10, ...searchFilters } = filterParams
+    // [note] 实际搜索字段和库表字段映射关系
+    const filterKeyMap = {
+      shop_type: 'category'
+    }
+    // 拼装搜索条件
+    const searchObj = Object.keys(searchFilters).reduce((resMap, key) => {
+      const sqlKey = filterKeyMap[key]
+      if (sqlKey) {
+        resMap[sqlKey] = { $elemMatch: { $eq: searchFilters[key] }}
+      }
+      return resMap
+    }, {})
+
+    // 返回的分页参数
+    const paginationMap = {
+      page_num,
+      page_size,
+      total: 0,
+      hasNext: null
+    }
+
     try {
       // 优先处理 除位置 的其他条件
-      if (shop_type) {
-        filterData = await ShopModel.find({ category: { $elemMatch: { $eq: shop_type }}}).lean(true)
-      } else {
-        filterData = await ShopModel.find().lean(true)
-      }
+      const resData = await ShopModel.find(searchObj).skip((page_num-1) * page_size).limit(page_size).lean(true)
+      paginationMap.total = await ShopModel.find(searchObj).count()
+      paginationMap.hasNext = (paginationMap.total > page_num * page_size)
 
       if (distance) {
         const [ lat, lng ] = current_pos.split(',')
         // 计算位置距离
-        for (const item of filterData) {
+        for (const item of resData) {
           item.distance = PosBase.getTwoPosDistance(Number(lat), Number(lng), item.pos.lat, item.pos.lng)
         }
-        filterData?.sort((value1, value2) => {
+        resData?.sort((value1, value2) => {
           return distance === 1 ? (value1.distance - value2.distance) : (value2.distance - value1.distance)
         })
       }
-      return filterData
+
+      return {
+        list: resData,
+        ...paginationMap
+      }
     } catch (err) {
       throw new Error(err)
     }
