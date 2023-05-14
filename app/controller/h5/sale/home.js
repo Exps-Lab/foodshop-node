@@ -7,17 +7,15 @@ class HomeController {
     try {
       _common.validate({
         page_num: {
-          type: 'number',
-          required: false,
+          type: 'number?',
           convertType: 'number'
         },
         page_size: {
-          type: 'number',
-          required: false,
+          type: 'number?',
           convertType: 'number'
         },
         distance: {
-          type: 'number',
+          type: 'number?',
           convertType: 'number',
         },
         current_pos: 'string?',
