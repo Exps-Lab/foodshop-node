@@ -43,20 +43,25 @@ class UserAddressService {
     }
   }
 
-  // 地址列表
-  async getUserAddressListService (req, res) {
-    const { u_id } = req.session
+  // 获取地址列表源数据
+  async preGetAddressList (u_id) {
     const { RedisInstance } = _common
     const { key } = this.getRedisInfo(u_id)
     let data = []
+    const redisAddressData = await RedisInstance.hGetAll(key)
+    if (redisAddressData !== null) {
+      data = Object.values(redisAddressData).map(address => JSON.parse(address))
+    } else {
+      data = await UserAddressModel.find({ u_id }).lean(true) || []
+    }
+    return data
+  }
+
+  // 地址列表
+  async getUserAddressListService (req, res) {
+    const { u_id } = req.session
     try {
-      // 优先从redis获取
-      const redisAddressData = await RedisInstance.hGetAll(key)
-      if (redisAddressData !== null) {
-        data = Object.values(redisAddressData).map(address => JSON.parse(address))
-      } else {
-        data = await UserAddressModel.find({ u_id }).lean(true) || []
-      }
+      const data = await this.preGetAddressList(u_id)
       // 加密手机号
       const transData = data.map(address => {
         address.phone = _common.cryptoPhone(address.phone)
