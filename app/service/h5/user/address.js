@@ -133,6 +133,7 @@ class UserAddressService {
     const { RedisInstance } = _common
     const { key } = this.getRedisInfo(u_id)
     const reqData = this.createRequestData(req)
+    reqData.id = address_id
     try {
       const data = await UserAddressModel.findOneAndUpdate(
         { u_id, id: address_id },
