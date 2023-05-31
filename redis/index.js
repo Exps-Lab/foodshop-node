@@ -142,8 +142,14 @@ const RedisInstance = new Redis()
  * redisInstance 封装的redis对象，包含一些实现的方法
  * redisClient   原生redis连接实例，如果redisInstance自己封装的方法不满足业务，可以直接用原生的原子方法处理
  */
-module.exports = {
+const exportObj = {
   RedisInstance,
   RedisClient: RedisInstance.redisClient
 }
+
+// 实例暴露到全局
+global._common.RedisInstance = exportObj.RedisInstance
+global._common.RedisClient = exportObj.RedisClient
+
+module.exports = exportObj
 

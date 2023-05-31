@@ -1,23 +1,21 @@
 // 消费者
 
-const MQConstruct = require('../index')
+// 提交订单对应死信队列key
+const OrderDLXKey = require('../DLXKeyMap')
 
 // 消费死信交换机推送消息
-class OrderPayConsumer extends MQConstruct {
-  constructor () {
-    super()
+class OrderPayConsumer {
+  constructor (mqInstance) {
     // [note] 获取连接实例
-    this.initMQ().then(connection => {
-      this.connInstance = connection
-      this.initConsumer()
-    })
+    this.connInstance = mqInstance
+    this.initConsumer()
   }
 
   async initConsumer () {
     // [note] 消费者实际消费的队列，要跟死信交换机绑定
     const consumerQueueName = 'consumerQueue'
     // [note] 获取死信交换机和routingKey命名
-    const { DLXExchange, DLXRoutingKey } = this.orderPayDLXKeys
+    const { DLXExchange, DLXRoutingKey } = OrderDLXKey
 
     const channel = await this.connInstance.createChannel()
     await channel.assertExchange(DLXExchange, 'direct', { durable: true })
@@ -43,5 +41,5 @@ class OrderPayConsumer extends MQConstruct {
   }
 }
 
-module.exports = new OrderPayConsumer()
+module.exports = OrderPayConsumer
 
