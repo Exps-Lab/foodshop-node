@@ -20,6 +20,25 @@ class OrderConfirmController {
     }
     await OrderConfirmService.getRecentAddress(req, res)
   }
+
+  // 获取确认订单页详情
+  async getConfirmDetail (req, res) {
+    try {
+      _common.validate({
+        shoppingBagId: {
+          type: 'string',
+        },
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await OrderConfirmService.getConfirmDetail(req, res)
+  }
 }
 
 module.exports = new OrderConfirmController()
