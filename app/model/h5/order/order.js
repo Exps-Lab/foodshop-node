@@ -5,7 +5,7 @@ const AutoEnhanceIndexPlugin = require('../../../plugin/autoEnhanceIndex')
 
 /**
  *
- u_id: int; 关联查询id，自增长
+ u_id: int; 用户id
  order_number: string；唯一订单号(19位)
  address_id: int; 收获地址id
  pay_origin: string; 支付方式
@@ -20,24 +20,22 @@ const AutoEnhanceIndexPlugin = require('../../../plugin/autoEnhanceIndex')
  shop_discount_fee: int; 选择商品触发的店铺满减金额
  goods_list: string; 订单商品信息列表
  package_fee: int; 订单打包费
- delivery_fee: int; 订单配送费
  coupon_ids: string; 订单选择优惠券列表
  origin_price: int; 订单原价 skus价格 + 打包费 + 配送费
  discount_price: int; 总优惠金额 优惠券列表 + 店铺满减
  pay_price: int; 订单实际支付价格 订单原价 - 优惠券列表
  order_remarks: string; 订单备注
  order_ware: int; 是否需要餐具
- need_bill: int; 是否需要发票
  */
 
 const OrderSchema = new Schema({
   u_id: {
     type: Number,
     required: true,
-    index: true,
+    index: true
   },
   order_number: {
-    type: String,
+    type: Number,
     required: true,
   },
   address_id: {
@@ -50,33 +48,31 @@ const OrderSchema = new Schema({
   },
   has_comment: {
     type: Number,
-    required: true,
     enum: [0, 1],
+    default: 0,
   },
   create_time: {
     type: String,
     required: true,
+    default: new Date().formatTime('yyyy-MM-dd hh:mm:ss')
   },
   pay_time: {
     type: String,
-    required: true,
   },
   cancel_time: {
     type: String,
-    required: true,
   },
   complete_time: {
     type: String,
-    required: true,
   },
   send_time: {
     type: String,
-    required: true,
   },
   order_status: {
     type: Number,
     required: true,
     enum: [0, 1, 2, 3, 4],
+    default: 0
   },
   shop_id: {
     type: Number,
@@ -92,13 +88,8 @@ const OrderSchema = new Schema({
     type: Number,
     required: true,
   },
-  delivery_fee: {
-    type: Number,
-    required: true,
-  },
   coupon_ids: {
     type: String,
-    required: true,
     trim: true,
   },
   origin_price: {
@@ -121,11 +112,7 @@ const OrderSchema = new Schema({
     type: Number,
     required: true,
     enum: [0, 1],
-  },
-  need_bill: {
-    type: Number,
-    enum: [0, 1],
-  },
+  }
 });
 
 // 注册插件

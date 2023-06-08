@@ -59,8 +59,12 @@ function cryptoPhone (phone = null) {
   return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
 }
 
-function generateOrderNumber() {
-
+// 生成订单id, 19位
+// 商铺id + 用户id + 雪花算法
+function generateOrderNumber(shopId, uId) {
+  if (!shopId || !uId) return new Error('shopId和用户id是必传的!')
+  const uniqStr = snowFlake().slice(4)
+  return `${shopId}${uId}${uniqStr}`
 }
 
 // 雪花算法生成唯一id
@@ -76,5 +80,6 @@ module.exports = {
   CtoPin,
   uuid,
   cryptoPhone,
-  snowFlake
+  snowFlake,
+  generateOrderNumber
 }
