@@ -7,6 +7,16 @@ class ShopBase extends PosBase {
     super(props);
   }
 
+  // 获取商铺基本信息
+  async getShopBaseInfo (id) {
+    if (id === undefined) return new Error('id必传')
+    try {
+      return await ShopModel.findOne({id}, {_id: 0, __v: 0}).lean(true)
+    } catch (err) {
+      return new Error(err)
+    }
+  }
+
   // 获取筛选后的商铺列表
   // 支持筛选：current_pos当前位置(lat, lng)，商铺类型(shop_type)
   async getFilterShopList (filterParams) {

@@ -1,10 +1,33 @@
-const ShopModel = require('../../../model/admin/shop')
 const PosBase = require("../../base-class/pos-base")
 const UserAddressService = require("../user/address")
+const ShopBase = require("../../base-class/shop-base")
+const OrderModal = require("../../../model/h5/order/order")
 
 class OrderConfirmService extends PosBase {
   constructor() {
     super()
+    this.ShopBaseInstance = new ShopBase()
+  }
+
+  // 获取shoppingBad信息
+  async getShoppingBagInfo (shoppingBagId, res) {
+    const { RedisInstance } = _common
+    const { choseGoods = null, shop_id } = JSON.parse(await RedisInstance.get(shoppingBagId) || '{}')
+
+    // 购物袋15分钟redis缓存已失效
+    if (choseGoods === null) {
+      res.json({
+        code: 20003,
+        msg: '选择商品已失效，请重新下单',
+        errLog: new Error('选择商品已失效，请重新下单')
+      })
+      return false
+    }
+
+    return {
+      shop_id,
+      choseGoods
+    }
   }
 
   // 获取距离定位最近的地址
@@ -38,25 +61,56 @@ class OrderConfirmService extends PosBase {
   async getConfirmDetail (req, res) {
     try {
       const { shoppingBagId } = req.query
-      const { RedisInstance } = _common
-      const { choseGoods = null, shop_id } = JSON.parse(await RedisInstance.get(shoppingBagId) || '{}')
-      const shopInfo = await ShopModel.findOne({ id: shop_id }, { admin_uid: 0, _id: 0, __v: 0 }).lean(true)
-
-      // 购物袋15分钟redis缓存已失效
-      if (choseGoods === null) {
-        res.json({
-          code: 20003,
-          msg: '选择商品已失效，请重新下单',
-          errLog: new Error('选择商品已失效，请重新下单')
-        })
-        return false
-      }
+      const { choseGoods, shop_id } = await this.getShoppingBagInfo(shoppingBagId, res)
+      const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
 
       res.json({
         data: {
           choseGoods,
           shopInfo
         }
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 生产订单
+  async createOrder (req, res) {
+    const { u_id } = req.session
+    const { shoppingBagId, addressId, orderRemarks, orderWare } = req.body
+
+    try {
+      const { choseGoods, shop_id } = await this.getShoppingBagInfo(shoppingBagId, res)
+      const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
+      const orderNumber = _common.generateOrderNumber(shop_id, u_id)
+      // 计算订单相关金额
+      const { goodsPrice, payPrice } = _common.orderTotalNeedPay(choseGoods, shopInfo)
+      // 拼装订单提交数据
+      const standardOrderData = {
+        u_id,
+        shop_id,
+        order_num: orderNumber,
+        address_id: addressId,
+        goods_list: choseGoods,
+        order_remarks: orderRemarks,
+        order_ware: orderWare,
+        pay_price: payPrice,
+        origin_price: goodsPrice,
+        delivery_fee: shopInfo.delivery_fee,
+        package_fee: _common.calcTotalBagFee(choseGoods),
+        shop_discount_price: _common.getDiscountInfo(shopInfo, goodsPrice).price,
+        // 目前没有优惠券，暂不计算
+        discount_total_price: _common.getDiscountInfo(shopInfo, goodsPrice).price
+      }
+
+      OrderModal.create(standardOrderData)
+      res.json({
+        data: standardOrderData
       })
     } catch (err) {
       res.json({

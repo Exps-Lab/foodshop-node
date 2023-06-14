@@ -6,4 +6,6 @@ router.get('/a', TestController.showTest)
 
 router.get('/b', TestController.sessionDemo)
 
+router.get('/realEstate/list', TestController.sessionDemo)
+
 module.exports = router

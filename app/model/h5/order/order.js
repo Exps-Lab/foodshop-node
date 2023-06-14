@@ -17,12 +17,13 @@ const AutoEnhanceIndexPlugin = require('../../../plugin/autoEnhanceIndex')
  send_time:     string; 订单配送需要时间，需要计算（时间戳）
  order_status: int; 订单状态 待支付0，已支付（准备货物中，可以考虑去掉）1，已取消2，配送中3，已送达4
  shop_id: int; 商铺id
- shop_discount_fee: int; 选择商品触发的店铺满减金额
- goods_list: string; 订单商品信息列表
+ delivery_fee: int; 商铺配送费
+ goods_list: array; 订单商品信息列表
  package_fee: int; 订单打包费
  coupon_ids: string; 订单选择优惠券列表
  origin_price: int; 订单原价 skus价格 + 打包费 + 配送费
- discount_price: int; 总优惠金额 优惠券列表 + 店铺满减
+ shop_discount_price: int; 店铺满减
+ discount_total_price: int; 总优惠金额 优惠券列表 + 店铺满减
  pay_price: int; 订单实际支付价格 订单原价 - 优惠券列表
  order_remarks: string; 订单备注
  order_ware: int; 是否需要餐具
@@ -34,9 +35,10 @@ const OrderSchema = new Schema({
     required: true,
     index: true
   },
-  order_number: {
-    type: Number,
+  order_num: {
+    type: String,
     required: true,
+    index: true
   },
   address_id: {
     type: Number,
@@ -58,15 +60,19 @@ const OrderSchema = new Schema({
   },
   pay_time: {
     type: String,
+    default: ''
   },
   cancel_time: {
     type: String,
+    default: ''
   },
   complete_time: {
     type: String,
+    default: ''
   },
   send_time: {
     type: String,
+    default: ''
   },
   order_status: {
     type: Number,
@@ -78,11 +84,13 @@ const OrderSchema = new Schema({
     type: Number,
     required: true,
   },
-  shop_discount_fee: Number,
-  goods_list: {
-    type: String,
+  delivery_fee: {
+    type: Number,
     required: true,
-    trim: true,
+  },
+  goods_list: {
+    type: Array,
+    required: true,
   },
   package_fee: {
     type: Number,
@@ -90,15 +98,17 @@ const OrderSchema = new Schema({
   },
   coupon_ids: {
     type: String,
-    trim: true,
+    default: ''
   },
   origin_price: {
     type: Number,
     required: true,
   },
-  discount_price: {
+  shop_discount_price: {
     type: Number,
-    default: 0
+  },
+  discount_total_price: {
+    type: Number,
   },
   pay_price: {
     type: Number,
@@ -109,9 +119,8 @@ const OrderSchema = new Schema({
     trim: true,
   },
   order_ware: {
-    type: Number,
+    type: Boolean,
     required: true,
-    enum: [0, 1],
   }
 });
 

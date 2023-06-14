@@ -39,6 +39,34 @@ class OrderConfirmController {
     }
     await OrderConfirmService.getConfirmDetail(req, res)
   }
+
+  // 生产订单
+  async createOrder (req, res) {
+    try {
+      _common.validate({
+        shoppingBagId: {
+          type: 'string',
+        },
+        addressId: {
+          type: 'number',
+        },
+        orderRemarks: {
+          type: 'string?',
+        },
+        orderWare: {
+          type: 'boolean'
+        },
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await OrderConfirmService.createOrder(req, res)
+  }
 }
 
 module.exports = new OrderConfirmController()

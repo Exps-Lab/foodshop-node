@@ -110,9 +110,9 @@ class ShopService extends ShopBase {
   async shopBaseInfoService (req, res) {
     try {
       const { shop_id, current_pos } = req.query
-      const shopInfo = await ShopModel.findOne({ id: shop_id }, { admin_uid: 0, _id:0, __v: 0 }).lean(true)
-      const [ userLat, userLng ] = current_pos.split(',')
-      const { lat, lng } = shopInfo.pos
+      const shopInfo = await this.getShopBaseInfo(shop_id)
+      const [userLat, userLng] = current_pos.split(',')
+      const {lat, lng} = shopInfo.pos
       shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`) || 0
       res.json({
         data: shopInfo
