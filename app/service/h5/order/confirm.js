@@ -21,7 +21,7 @@ class OrderConfirmService extends PosBase {
         msg: '选择商品已失效，请重新下单',
         errLog: new Error('选择商品已失效，请重新下单')
       })
-      return false
+      return null
     }
 
     return {
@@ -79,7 +79,7 @@ class OrderConfirmService extends PosBase {
     }
   }
 
-  // 生产订单
+  // 创建订单
   async createOrder (req, res) {
     const { u_id } = req.session
     const { shoppingBagId, addressId, orderRemarks, orderWare } = req.body
