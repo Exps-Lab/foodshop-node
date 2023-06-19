@@ -27,6 +27,7 @@ const AutoEnhanceIndexPlugin = require('../../../plugin/autoEnhanceIndex')
  pay_price: int; 订单实际支付价格 订单原价 - 优惠券列表
  order_remarks: string; 订单备注
  order_ware: int; 是否需要餐具
+ send_cost_time: int; 配送耗费时间
  */
 
 const OrderSchema = new Schema({
@@ -121,6 +122,10 @@ const OrderSchema = new Schema({
   order_ware: {
     type: Boolean,
     required: true,
+  },
+  send_cost_time: {
+    type: Number,
+    require: true
   }
 });
 

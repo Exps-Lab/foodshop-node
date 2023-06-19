@@ -56,6 +56,9 @@ class OrderConfirmController {
         orderWare: {
           type: 'boolean'
         },
+        sendCostTime: {
+          type: 'number'
+        }
       }, req)
     } catch (err) {
       res.json({

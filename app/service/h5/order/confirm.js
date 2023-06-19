@@ -88,7 +88,7 @@ class OrderConfirmService extends PosBase {
   // 创建订单
   async createOrder (req, res) {
     const { u_id } = req.session
-    const { shoppingBagId, addressId, orderRemarks, orderWare } = req.body
+    const { shoppingBagId, addressId, orderRemarks, orderWare, sendCostTime } = req.body
 
     try {
       const shoppingBagData = await this.getShoppingBagInfo(shoppingBagId, res)
@@ -97,7 +97,7 @@ class OrderConfirmService extends PosBase {
         const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
         const orderNumber = _common.generateOrderNumber(shop_id, u_id)
         // 计算订单相关金额
-        const {goodsPrice, payPrice} = _common.orderTotalNeedPay(choseGoods, shopInfo)
+        const { goodsPrice, payPrice } = _common.orderTotalNeedPay(choseGoods, shopInfo)
         // 拼装订单提交数据
         const standardOrderData = {
           u_id,
@@ -107,6 +107,7 @@ class OrderConfirmService extends PosBase {
           goods_list: choseGoods,
           order_remarks: orderRemarks,
           order_ware: orderWare,
+          send_cost_time: sendCostTime,
           pay_price: payPrice,
           origin_price: goodsPrice,
           delivery_fee: shopInfo.delivery_fee,

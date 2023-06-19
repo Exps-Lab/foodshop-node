@@ -6,6 +6,9 @@ class OrderInfoService extends PosBase {
     super()
   }
 
+  // 订单过期时间15分钟
+  static orderExpireTime = 15 * 60 * 1000
+
   // 统一处理订单详情源数据获取
   async getOrderDetailHelper (order_num) {
     if (!order_num) {
@@ -66,7 +69,7 @@ class OrderInfoService extends PosBase {
   // 统一收敛不同业务场景对订单字段的更改，避免更改字段散落到各个业务代码中。
   // 支付成功修改更新字段: pay_time, order_status
   // 订单状态 待支付0，已支付（准备货物中，可以考虑去掉）1，已取消2，配送中3，已送达4
-  async orderPaySuccess (order_num) {
+  async orderPaySuccessHelper (order_num) {
     if (!order_num) {
       throw new Error('获取订单详情必须传入order_num')
     }
@@ -82,9 +85,17 @@ class OrderInfoService extends PosBase {
 
   // 订单详情
   async getOrderDetail (req, res) {
-    const { order_num } = req.body
+    const { orderNum } = req.query
     try {
-      await this.getOrderDetailHelper(order_num)
+      const data = await this.getOrderDetailHelper(orderNum)
+      const { create_time, order_status } = data
+      if (order_status === 0) {
+        // 未支付订单15分钟后过期
+        data.order_expire_time = new Date(create_time).getTime() + OrderInfoService.orderExpireTime
+      }
+      res.json({
+        data
+      })
     } catch (err) {
       res.json({
         code: 20002,

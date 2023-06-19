@@ -5,7 +5,7 @@ class commonService extends PosBase {
     super()
   }
 
-  // 计算两个位置之间路线所需时间
+  // 计算当前位置到不同目的地之间路线所需时间（1对多）
   async getPosCostTimeService (req, res) {
     const [ startLat, startLng ] = req.query.startPos.split(',')
     const endPosGroups = req.query.endPosArr || []

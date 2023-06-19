@@ -12,6 +12,7 @@ class OrderPayService {
       const { pay_price } = await OrderInfoService.getOrderDetailHelper(orderNum)
       // [note]判断是否够支付
       if (pay_price > accountMoney) {
+        const errMsg = `余额不足，账户仅剩 ${accountMoney} 币`
         res.json({
           code: 20004,
           data: {
@@ -19,12 +20,12 @@ class OrderPayService {
             pay_price,
             orderNum
           },
-          msg: '余额不足',
-          errLog: new Error('余额不足')
+          msg: errMsg,
+          errLog: new Error(errMsg)
         })
       } else {
         const afterPayAccount = await AccountService.updateAccountMoneyHelper(u_id, pay_price, 'minus')
-        await OrderInfoService.orderPaySuccess(orderNum)
+        await OrderInfoService.orderPaySuccessHelper(orderNum)
         res.json({
           data: {
             orderNum,
