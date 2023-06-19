@@ -2,6 +2,7 @@ const PosBase = require("../../base-class/pos-base")
 const UserAddressService = require("../user/address")
 const ShopBase = require("../../base-class/shop-base")
 const OrderModal = require("../../../model/h5/order/order")
+const { shoppingBagPreKey } = require('../../../redis-prekey')
 
 class OrderConfirmService extends PosBase {
   constructor() {
@@ -12,7 +13,9 @@ class OrderConfirmService extends PosBase {
   // 获取shoppingBad信息
   async getShoppingBagInfo (shoppingBagId, res) {
     const { RedisInstance } = _common
-    const { choseGoods = null, shop_id } = JSON.parse(await RedisInstance.get(shoppingBagId) || '{}')
+    const { key } = shoppingBagPreKey
+    const ShoppingBagKey = `${key}:${shoppingBagId}`
+    const { choseGoods = null, shop_id } = JSON.parse(await RedisInstance.get(ShoppingBagKey) || '{}')
 
     // 购物袋15分钟redis缓存已失效
     if (choseGoods === null) {
@@ -61,15 +64,18 @@ class OrderConfirmService extends PosBase {
   async getConfirmDetail (req, res) {
     try {
       const { shoppingBagId } = req.query
-      const { choseGoods, shop_id } = await this.getShoppingBagInfo(shoppingBagId, res)
-      const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
+      const shoppingBagData = await this.getShoppingBagInfo(shoppingBagId, res)
+      if (shoppingBagData !== null) {
+        const { choseGoods, shop_id } = shoppingBagData
+        const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
 
-      res.json({
-        data: {
-          choseGoods,
-          shopInfo
-        }
-      })
+        res.json({
+          data: {
+            choseGoods,
+            shopInfo
+          }
+        })
+      }
     } catch (err) {
       res.json({
         code: 20002,
@@ -85,33 +91,36 @@ class OrderConfirmService extends PosBase {
     const { shoppingBagId, addressId, orderRemarks, orderWare } = req.body
 
     try {
-      const { choseGoods, shop_id } = await this.getShoppingBagInfo(shoppingBagId, res)
-      const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
-      const orderNumber = _common.generateOrderNumber(shop_id, u_id)
-      // 计算订单相关金额
-      const { goodsPrice, payPrice } = _common.orderTotalNeedPay(choseGoods, shopInfo)
-      // 拼装订单提交数据
-      const standardOrderData = {
-        u_id,
-        shop_id,
-        order_num: orderNumber,
-        address_id: addressId,
-        goods_list: choseGoods,
-        order_remarks: orderRemarks,
-        order_ware: orderWare,
-        pay_price: payPrice,
-        origin_price: goodsPrice,
-        delivery_fee: shopInfo.delivery_fee,
-        package_fee: _common.calcTotalBagFee(choseGoods),
-        shop_discount_price: _common.getDiscountInfo(shopInfo, goodsPrice).price,
-        // 目前没有优惠券，暂不计算
-        discount_total_price: _common.getDiscountInfo(shopInfo, goodsPrice).price
-      }
+      const shoppingBagData = await this.getShoppingBagInfo(shoppingBagId, res)
+      if (shoppingBagData !== null) {
+        const { choseGoods, shop_id } = shoppingBagData
+        const shopInfo = await this.ShopBaseInstance.getShopBaseInfo(shop_id)
+        const orderNumber = _common.generateOrderNumber(shop_id, u_id)
+        // 计算订单相关金额
+        const {goodsPrice, payPrice} = _common.orderTotalNeedPay(choseGoods, shopInfo)
+        // 拼装订单提交数据
+        const standardOrderData = {
+          u_id,
+          shop_id,
+          order_num: orderNumber,
+          address_id: addressId,
+          goods_list: choseGoods,
+          order_remarks: orderRemarks,
+          order_ware: orderWare,
+          pay_price: payPrice,
+          origin_price: goodsPrice,
+          delivery_fee: shopInfo.delivery_fee,
+          package_fee: _common.calcTotalBagFee(choseGoods),
+          shop_discount_price: _common.getDiscountInfo(shopInfo, goodsPrice).price,
+          // 目前没有优惠券，暂不计算
+          discount_total_price: _common.getDiscountInfo(shopInfo, goodsPrice).price
+        }
 
-      OrderModal.create(standardOrderData)
-      res.json({
-        data: standardOrderData
-      })
+        OrderModal.create(standardOrderData)
+        res.json({
+          data: standardOrderData
+        })
+      }
     } catch (err) {
       res.json({
         code: 20002,

@@ -214,9 +214,10 @@ class ShopService extends ShopBase {
       const { u_id } = req.session
       const { shop_id, chose_goods_list } = req.body
 
-      // const ShoppingBagKey = `sale:shoppingBag:${u_id}`
+      // const ShoppingBagKey = `sale:shoppingBag:snowFlake19位随机`
       const { key, expireTime } = shoppingBagPreKey
-      const ShoppingBagKey = `${key}:${u_id}`
+      const shoppingBagId = _common.snowFlake()
+      const ShoppingBagKey = `${key}:${shoppingBagId}`
       const choseGoodsArr = {
         shop_id,
         choseGoods: chose_goods_list
@@ -230,7 +231,7 @@ class ShopService extends ShopBase {
       // await new orderPayProducer().productMessage(mesStr)
 
       res.json({
-        data: ShoppingBagKey
+        data: shoppingBagId
       })
     } catch (err) {
       res.json({
