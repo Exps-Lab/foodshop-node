@@ -57,7 +57,7 @@ const OrderSchema = new Schema({
   create_time: {
     type: String,
     required: true,
-    default: new Date().formatTime('yyyy-MM-dd hh:mm:ss')
+    default: ''
   },
   pay_time: {
     type: String,

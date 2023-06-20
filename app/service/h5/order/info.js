@@ -7,7 +7,7 @@ class OrderInfoService extends PosBase {
   }
 
   // 订单过期时间15分钟
-  static orderExpireTime = 15 * 60 * 1000
+  orderExpireTime = 15 * 60 * 1000
 
   // 统一处理订单详情源数据获取
   async getOrderDetailHelper (order_num) {
@@ -88,14 +88,24 @@ class OrderInfoService extends PosBase {
     const { orderNum } = req.query
     try {
       const data = await this.getOrderDetailHelper(orderNum)
-      const { create_time, order_status } = data
-      if (order_status === 0) {
-        // 未支付订单15分钟后过期
-        data.order_expire_time = new Date(create_time).getTime() + OrderInfoService.orderExpireTime
+
+      // 订单15分钟内未支付已取消失效
+      if (data === undefined) {
+        res.json({
+          code: 20005,
+          msg: '订单已失效，请重新下单',
+          errLog: new Error('订单已失效，请重新下单')
+        })
+      } else {
+        const { create_time, order_status } = data
+        if (order_status === 0) {
+          // 未支付订单15分钟后过期
+          data.order_expire_time = new Date(create_time).getTime() + this.orderExpireTime
+        }
+        res.json({
+          data
+        })
       }
-      res.json({
-        data
-      })
     } catch (err) {
       res.json({
         code: 20002,

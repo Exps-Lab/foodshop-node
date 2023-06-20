@@ -112,6 +112,7 @@ class OrderConfirmService extends PosBase {
           origin_price: goodsPrice,
           delivery_fee: shopInfo.delivery_fee,
           package_fee: _common.calcTotalBagFee(choseGoods),
+          create_time: new Date().formatTime('yyyy-MM-dd hh:mm:ss'),
           shop_discount_price: _common.getDiscountInfo(shopInfo, goodsPrice).price,
           // 目前没有优惠券，暂不计算
           discount_total_price: _common.getDiscountInfo(shopInfo, goodsPrice).price
