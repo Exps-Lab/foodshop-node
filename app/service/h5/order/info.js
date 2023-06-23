@@ -76,7 +76,7 @@ class OrderInfoService extends PosBase {
     try {
       return await this.updateOrderDetailHelper(order_num, {
         pay_time: new Date().formatTime('yyyy-MM-dd hh:mm:ss'),
-        order_status: 2
+        order_status: 3
       })
     } catch (err) {
       throw new Error(err)
@@ -93,8 +93,8 @@ class OrderInfoService extends PosBase {
       if (data === undefined) {
         res.json({
           code: 20005,
-          msg: '订单已失效，请重新下单',
-          errLog: new Error('订单已失效，请重新下单')
+          msg: '查无此订单，请重新下单',
+          errLog: new Error('查无此订单，请重新下单')
         })
       } else {
         const { create_time, order_status } = data
