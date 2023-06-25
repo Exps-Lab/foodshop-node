@@ -119,6 +119,29 @@ class OrderInfoService extends PosBase {
   async getOrderList (req, res) {
   }
 
+  // 取消订单
+  async cancelOrder (req, res) {
+    const { orderNum } = req.body
+    try {
+      await this.updateOrderDetailHelper(orderNum, {
+        cancel_time: new Date().formatTime('yyyy-MM-dd hh:mm:ss'),
+        order_status: 2
+      })
+      res.json({
+        data: {
+          orderNum
+        },
+        msg: '订单取消成功'
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
 }
 
 module.exports = new OrderInfoService()

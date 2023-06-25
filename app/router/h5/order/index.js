@@ -8,5 +8,6 @@ router.get('/auth/getConfirmDetail', OrderConfirmController.getConfirmDetail)
 
 router.post('/auth/order/create', OrderConfirmController.createOrder)
 router.get('/auth/order/detail', OrderInfoController.getOrderDetail)
+router.post('/auth/order/cancel', OrderInfoController.cancelOrder)
 
 module.exports = router

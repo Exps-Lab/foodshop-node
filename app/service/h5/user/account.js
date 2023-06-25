@@ -48,7 +48,7 @@ class AccountService {
       const { money: nowMoney } = await this.getAccountMoneyHelper(u_id)
       const calcMoney = type === 'add' ? nowMoney + changeMoney : nowMoney - changeMoney
       return await AccountModel.findOneAndUpdate({ u_id }, {
-        money: calcMoney,
+        money: _common.priceHandle(calcMoney),
         money_modify_time: Date.now(),
       }, {
         new: true

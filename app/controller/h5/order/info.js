@@ -20,6 +20,24 @@ class OrderConfirmController {
     }
     await OrderInfoService.getOrderDetail(req, res)
   }
+  // 取消订单
+  async cancelOrder (req, res) {
+    try {
+      _common.validate({
+        orderNum: {
+          type: 'string',
+        },
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await OrderInfoService.cancelOrder(req, res)
+  }
 }
 
 module.exports = new OrderConfirmController()
