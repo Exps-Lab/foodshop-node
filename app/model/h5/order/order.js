@@ -4,12 +4,11 @@ const Schema = mongoose.Schema;
 const AutoEnhanceIndexPlugin = require('../../../plugin/autoEnhanceIndex')
 
 /**
- *
  u_id: int; 用户id
  order_number: string；唯一订单号(19位)
  address_id: int; 收获地址id
  pay_origin: string; 支付方式
- has_comment:int; 是否当前订单已被评论
+ comment_id: int; 评论id，订单评论后赋值
  create_time:   string; 订单创建时间（时间戳）
  pay_time:      string; 订单支付时间（时间戳）
  cancel_time:   string; 订单取消时间（时间戳）
@@ -49,10 +48,9 @@ const OrderSchema = new Schema({
     type: String,
     default: '餐币',
   },
-  has_comment: {
+  comment_id: {
     type: Number,
-    enum: [0, 1],
-    default: 0,
+    default: null,
   },
   create_time: {
     type: String,
