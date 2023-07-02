@@ -1,5 +1,5 @@
 
-const CommentService = require('../../../service/h5/order/comment')
+const CommentService = require('../../../service/h5/comment')
 
 class CommentController {
   // 提交评论
@@ -41,6 +41,30 @@ class CommentController {
       return
     }
     await CommentService.submitComment(req, res)
+  }
+
+  async getCommentByShopId (req, res) {
+    try {
+      _common.validate({
+        shopId: {
+          type: 'number',
+          convertType: 'number'
+        },
+        pageNum: {
+          type: 'number',
+          convertType: 'number'
+        },
+        pageSize: 'number?'
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await CommentService.getCommentByShopId(req, res)
   }
 }
 
