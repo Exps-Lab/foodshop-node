@@ -97,6 +97,15 @@ class OrderInfoService extends PosBase {
       }
     }, {
       $unwind: '$user'
+    }, {
+      $lookup: {
+        from: 'shop',
+        localField: 'shop_id',
+        foreignField: 'id',
+        as: 'shop',
+      }
+    }, {
+      $unwind: '$shop'
     }]
     if (needComment) {
       lookUp.push({
