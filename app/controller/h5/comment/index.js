@@ -54,7 +54,10 @@ class CommentController {
           type: 'number',
           convertType: 'number'
         },
-        pageSize: 'number?'
+        pageSize: {
+          type: 'number?',
+          convertType: 'number'
+        }
       }, req)
     } catch (err) {
       res.json({
@@ -65,6 +68,33 @@ class CommentController {
       return
     }
     await CommentService.getCommentByShopId(req, res)
+  }
+
+  async getCommentListByOrder (req, res) {
+    try {
+      _common.validate({
+        type: {
+          type: 'number',
+          convertType: 'number'
+        },
+        pageNum: {
+          type: 'number',
+          convertType: 'number'
+        },
+        pageSize: {
+          type: 'number?',
+          convertType: 'number'
+        }
+      }, req)
+    } catch (err) {
+      res.json({
+        code: 10001,
+        msg: '[Request Params Error]',
+        errLog: err,
+      })
+      return
+    }
+    await CommentService.getCommentListByOrder(req, res)
   }
 }
 

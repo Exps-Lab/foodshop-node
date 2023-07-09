@@ -41,6 +41,7 @@ class OrderCommentService {
     }
   }
 
+  // 商品详情页获取评论列表
   async getCommentByShopId (req, res) {
     const { shopId, pageNum = 1, pageSize = 10 } = req.query
 
@@ -106,6 +107,35 @@ class OrderCommentService {
           list: resData,
           ...paginationMap
         }
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
+  }
+
+  // 获取评论列表(订单维度)
+  async getCommentListByOrder (req, res) {
+    const { u_id } = req.session
+    const { pageNum = 1, pageSize = 10, type } = req.query
+
+    // 处理查询条件
+    const searchObj = {
+      u_id,
+      pageNum,
+      pageSize
+    }
+    searchObj.comment_id = (type === 0) ? null : { "$ne": null }
+    // 是否需要 联表查 评论详情
+    const needComment = (type === 1)
+
+    try {
+      const data = await OrderInfoService.getOrderListHelper(searchObj, needComment)
+      res.json({
+        data
       })
     } catch (err) {
       res.json({

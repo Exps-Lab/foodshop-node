@@ -83,6 +83,88 @@ class OrderInfoService extends PosBase {
     }
   }
 
+  // 统一处理获取订单列表逻辑
+  async getOrderListHelper (searchConf, needComment = false) {
+    const { pageNum, pageSize, ...searchObj } = searchConf
+
+    // 处理评论关联查询
+    let lookUp = [{
+      $lookup: {
+        from: 'user',
+        localField: 'u_id',
+        foreignField: 'u_id',
+        as: 'user',
+      }
+    }, {
+      $unwind: '$user'
+    }]
+    if (needComment) {
+      lookUp.push({
+        $lookup: {
+          from: 'comment',
+          localField: 'comment_id',
+          foreignField: 'id',
+          as: 'comment',
+        }
+      }, {
+        $unwind: '$comment'
+      }, {
+        $addFields: {
+          comment_img: '$comment.comment_img',
+          comment_msg: '$comment.comment_msg',
+          comment_skus: '$comment.comment_skus',
+          comment_time: '$comment.comment_time',
+          ranks: '$comment.ranks'
+        }
+      }, {
+        $project: {
+          comment: 0
+        }
+      })
+    }
+
+    // 返回的分页参数
+    const paginationMap = {
+      pageNum,
+      pageSize,
+      total: 0,
+      hasNext: null
+    }
+
+    try {
+      const resData = await OrderModal.aggregate([
+        ...lookUp,
+        {
+          $match: searchObj
+        }, {
+          $skip: (pageNum - 1) * pageSize
+        }, {
+          $limit: pageSize
+        }, {
+          $addFields: {
+            user_avatar: '$user.avatar',
+            user_name: '$user.username'
+          }
+        }, {
+          $project: {
+            _id: 0,
+            __v: 0,
+            user: 0
+          }
+        }
+      ])
+      paginationMap.total = await OrderModal.find(searchObj).count()
+      paginationMap.hasNext = (paginationMap.total > pageNum * pageSize)
+
+      return {
+        list: resData,
+        ...paginationMap
+      }
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
+
   // 订单详情
   async getOrderDetail (req, res) {
     const { orderNum } = req.query
