@@ -4,6 +4,7 @@ const UserController = require('../../../controller/h5/user/login')
 const UserInfoController = require('../../../controller/h5/user/info')
 const UserAddressController = require('../../../controller/h5/user/address')
 const UserAccountController = require('../../../controller/h5/user/account')
+const UserCollectController = require('../../../controller/h5/user/collect')
 const CommentCenterController = require('../../../controller/h5/comment/index')
 
 // userLogin
@@ -30,5 +31,10 @@ router.post('/auth/account/money/update', UserAccountController.updateAccountMon
 
 // commentCenter
 router.get('/auth/commentCenter/list', CommentCenterController.getCommentListByOrder)
+
+// userCollect
+router.post('/auth/collect/add', UserCollectController.addCollectShop)
+router.post('/auth/collect/remove', UserCollectController.removeCollectShop)
+router.get('/auth/collect/list', UserCollectController.getCollectShopList)
 
 module.exports = router

@@ -1,6 +1,7 @@
 const ShopModel = require('../../../model/admin/shop')
 const foodCategoryModel = require('../../../model/admin/food-category')
 const OrderCommentService = require('../../../service/h5/comment')
+const UserCollectService = require('../../../service/h5/user/collect')
 const foodModel = require('../../../model/admin/food')
 const PosBase = require("../../base-class/pos-base")
 const ShopBase = require('../../base-class/shop-base')
@@ -110,15 +111,18 @@ class ShopService extends ShopBase {
   // 获取商铺基本信息
   async shopBaseInfoService (req, res) {
     try {
+      const { u_id } = req.session
       const { shop_id, current_pos } = req.query
       const shopInfo = await this.getShopBaseInfo(shop_id)
       // 添加其他基本信息
       // 包含该商品总评论数，送达大约时间
       const commentCount = await OrderCommentService.getCommentCount({ shop_id })
+      const shopCollected = u_id ? await UserCollectService.isShopCollected(u_id, shop_id) : false
       const [userLat, userLng] = current_pos.split(',')
       const { lat, lng } = shopInfo.pos
 
       shopInfo.comment_count = commentCount
+      shopInfo.shopCollected = shopCollected
       shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`) || 0
       res.json({
         data: shopInfo
