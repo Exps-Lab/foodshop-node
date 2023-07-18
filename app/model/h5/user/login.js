@@ -13,7 +13,10 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  avatar: String,
+  avatar: {
+    type: String,
+    default: 'http://static.foodshop.fun/WzEaxHRQsmA2rea.png'
+  },
   c_time: Number,
 });
 
