@@ -13,6 +13,6 @@ router.post('/auth/order/cancel', OrderInfoController.cancelOrder)
 
 // 评论模块
 router.post('/auth/comment/submit', CommentController.submitComment)
-router.get('/auth/comment/getByShopId', CommentController.getCommentByShopId)
+router.get('/noauth/comment/getByShopId', CommentController.getCommentByShopId)
 
 module.exports = router
