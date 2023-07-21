@@ -97,6 +97,10 @@ class OrderCommentService {
             user: 0,
             order: 0
           }
+        }, {
+          $sort: {
+            comment_time: -1
+          }
         }
       ])
       paginationMap.total = await CommentModal.find(searchObj).count()
