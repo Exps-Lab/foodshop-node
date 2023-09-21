@@ -9,6 +9,7 @@ router.get('/auth/getConfirmDetail', OrderConfirmController.getConfirmDetail)
 
 router.post('/auth/order/create', OrderConfirmController.createOrder)
 router.get('/auth/order/detail', OrderInfoController.getOrderDetail)
+router.get('/auth/order/list', OrderInfoController.getOrderList)
 router.post('/auth/order/cancel', OrderInfoController.cancelOrder)
 
 // 评论模块

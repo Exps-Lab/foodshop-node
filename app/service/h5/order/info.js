@@ -208,6 +208,28 @@ class OrderInfoService extends PosBase {
 
   // 订单列表
   async getOrderList (req, res) {
+    const { u_id } = req.session
+    const { pageNum = 1, pageSize = 10, type } = req.query
+
+    // 处理查询条件
+    const searchObj = {
+      u_id,
+      pageNum,
+      pageSize
+    }
+
+    try {
+      const data = await this.getOrderListHelper(searchObj)
+      res.json({
+        data
+      })
+    } catch (err) {
+      res.json({
+        code: 20002,
+        msg: err,
+        errLog: err
+      })
+    }
   }
 
   // 取消订单
