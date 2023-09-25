@@ -9,12 +9,12 @@ class OrderPayProducer {
   static channel = null
   static expiredQueue = null
 
-  async initProducer (mqInstance) {
+  async initProducer (mqInstance, waitingTime) {
     OrderPayProducer.channel = await mqInstance.createChannel()
 
     // [note] 发送消息使用的消息队列，所有经过此队列发出的消息有效期为15分钟
     const expiredQueueName = 'ttlQueue'
-    const queueExpired = 20 * 1000
+    const queueExpired = waitingTime || 20 * 1000
 
     // [note] 获取死信交换机和routingKey命名
     const { DLXExchange, DLXRoutingKey } = OrderDLXKey

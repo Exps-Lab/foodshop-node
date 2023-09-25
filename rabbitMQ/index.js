@@ -30,10 +30,10 @@ class MQConstruct {
     })
   }
   // [note]项目启动就开始监听consumer对应交换机消息推送
-  async initConsumers () {
+  async initConsumers (waitingTime) {
     // 提交订单consumer
     new OrderPayConsumer(MQConstruct._connInstance)
-    await new OrderPayProducer().initProducer(MQConstruct._connInstance)
+    await new OrderPayProducer().initProducer(MQConstruct._connInstance, waitingTime)
   }
 }
 

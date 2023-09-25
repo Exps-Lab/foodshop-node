@@ -3,6 +3,7 @@ const UserAddressService = require("../user/address")
 const ShopBase = require("../../base-class/shop-base")
 const OrderModal = require("../../../model/h5/order/order")
 const { shoppingBagPreKey } = require('../../../redis-prekey')
+const orderPayProducer = require('../../../../rabbitMQ/orderPay/producer')
 
 class OrderConfirmService extends PosBase {
   constructor() {
@@ -119,6 +120,11 @@ class OrderConfirmService extends PosBase {
         }
 
         OrderModal.create(standardOrderData)
+        // 发送有效期15分钟的支付消息，超时取消订单
+        const mesStr = JSON.stringify({
+          orderNum: orderNumber
+        })
+        await new orderPayProducer().productMessage(mesStr)
         res.json({
           data: standardOrderData
         })

@@ -1,4 +1,5 @@
 // 消费者
+const OrderInfoService = require("../../app/service/h5/order/info")
 
 // 提交订单对应死信队列key
 const OrderDLXKey = require('../DLXKeyMap')
@@ -25,15 +26,28 @@ class OrderPayConsumer {
     await channel.bindQueue(queue, DLXExchange, DLXRoutingKey)
 
     // Listener
-    await channel.consume(queue, (msg) => {
+    await channel.consume(queue, async (msg) => {
       if (msg !== null) {
         console.log(`received time: ${new Date()}`)
         // 接收json字符串
-        const { name } = JSON.parse(msg.content.toString())
-        console.log('post data:', name)
-
+        const { orderNum } = JSON.parse(msg.content.toString())
         // [note] 消费者发送ack确认收到消息
         channel.ack(msg)
+        // 该订单若超时未支付，则取消订单
+        const { order_status } = await OrderInfoService.getOrderDetailHelper(orderNum)
+        if (order_status === 0) {
+          console.log('超时取消', orderNum)
+          OrderInfoService.updateOrderDetailHelper(orderNum, {
+            cancel_time: new Date().formatTime('yyyy-MM-dd hh:mm:ss'),
+            order_status: 2
+          })
+        } else if (order_status === 3) {
+          // 订单配送完成
+          OrderInfoService.updateOrderDetailHelper(orderNum, {
+            complete_time: new Date().formatTime('yyyy-MM-dd hh:mm:ss'),
+            order_status: 4
+          })
+        }
       } else {
         console.log('消费者收取消息失败！')
       }
