@@ -234,13 +234,12 @@ class ShopService extends ShopBase {
       // 事务处理添加并设置过期时间
       await RedisInstance.set(ShoppingBagKey, choseGoodsArr, expireTime)
 
-      // const orderPayMQInstance = await global._common.getMQInstance('orderPay')
-      const orderPayMQInstance = await global._common.getMQInstance('sendOrder')
-      // [test] 发送有效期15分钟的支付消息，超时取消订单
-      const mesStr = JSON.stringify({
-        name: 'fff'
-      })
-      await orderPayMQInstance.productMessage(mesStr, 15 * 1000)
+      // const orderPayMQInstance = await global._common.getMQInstance('sendOrder')
+      // // [test] 发送有效期15分钟的支付消息，超时取消订单
+      // const mesStr = JSON.stringify({
+      //   name: 'fff'
+      // })
+      // await orderPayMQInstance.productMessage(mesStr, 15 * 1000)
 
       res.json({
         data: shoppingBagId
