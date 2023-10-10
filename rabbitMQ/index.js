@@ -2,22 +2,21 @@
 const chalk = require('chalk')
 const amqplib = require('amqplib');
 
-const OrderPayConsumer = require('./orderPay/cancelConsumer')
-const OrderPayProducer = require('./orderPay/producer')
+const MQDLXList = require('./DLXList')
+const CreateTTLMQ = require('./createTTLMQ')
 
 class MQConstruct {
+  #connInstance = null
+  mqInstanceMap = {}
   constructor() {
     this.initMQ()
   }
-  static _connInstance = null
   async initMQ () {
-    if (MQConstruct._connInstance === null) {
-      MQConstruct._connInstance = await this.getConn()
+    if (this.#connInstance === null) {
+      this.#connInstance = await this.getConn()
     }
 
-    // 实例暴露到全局
-    // global._common._RabbitMQIns = MQConstruct._connInstance
-    await this.initConsumers()
+    await this.registerMQ()
   }
   async getConn () {
     return new Promise(resolve => {
@@ -29,16 +28,30 @@ class MQConstruct {
       return conn
     })
   }
-  // [note]项目启动就开始监听consumer对应交换机消息推送
-  async initConsumers () {
-    // 提交订单consumer
-    new OrderPayConsumer(MQConstruct._connInstance)
-    await new OrderPayProducer().initProducer(MQConstruct._connInstance)
+
+  // 注册所有的mq
+  async registerMQ () {
+    Object.keys(MQDLXList).forEach(mqKey => {
+      const mqConf = MQDLXList[mqKey]
+      mqConf.MQInstance = this.#connInstance
+
+      this.mqInstanceMap[mqKey] = new CreateTTLMQ(mqConf)
+    })
+  }
+
+  // 获取某个mq实例，便于发送mq消息
+  getMQIns (mqKey) {
+    if (!mqKey) {
+      throw new Error('请传入要获取的mqKey值')
+    }
+    return this.mqInstanceMap[mqKey] || null
   }
 }
 
 const RabbitMQIns = new MQConstruct()
+// 方法绑定全局
+global._common.getMQInstance = RabbitMQIns.getMQIns.bind(RabbitMQIns)
 
 module.exports = {
-  RabbitMQIns
+  getMQInstance: RabbitMQIns.getMQIns
 }
