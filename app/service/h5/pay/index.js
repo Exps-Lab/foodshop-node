@@ -9,7 +9,7 @@ class OrderPayService {
     try {
       // 1.查询账户余额 2.查询订单支付金额 3.金额够余额消费，不够报错提示
       const { money: accountMoney } = await AccountService.getAccountMoneyHelper(u_id)
-      const { pay_price } = await OrderInfoService.getOrderDetailHelper(orderNum)
+      const { pay_price, send_cost_time } = await OrderInfoService.getOrderDetailHelper(orderNum)
       // [note]判断是否够支付
       if (pay_price > accountMoney) {
         const errMsg = `余额不足，账户仅剩 ${accountMoney} 币`
@@ -26,6 +26,13 @@ class OrderPayService {
       } else {
         const afterPayAccount = await AccountService.updateAccountMoneyHelper(u_id, pay_price, 'minus')
         await OrderInfoService.orderPaySuccessHelper(orderNum)
+        
+        // 配送时间耗尽后，订单更新为已送达
+        const sendOrderMQInstance = await global._common.getMQInstance('sendOrder')
+        const mesStr = JSON.stringify({
+          orderNum: orderNum
+        })
+        await sendOrderMQInstance.productMessage(mesStr, send_cost_time * 60 * 1000)
         res.json({
           data: {
             orderNum,

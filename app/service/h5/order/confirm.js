@@ -119,6 +119,12 @@ class OrderConfirmService extends PosBase {
         }
 
         OrderModal.create(standardOrderData)
+        const orderPayMQInstance = await global._common.getMQInstance('orderPay')
+        // 发送有效期15分钟的支付消息，超时取消订单
+        const mesStr = JSON.stringify({
+          orderNum: orderNumber
+        })
+        await orderPayMQInstance.productMessage(mesStr)
         res.json({
           data: standardOrderData
         })

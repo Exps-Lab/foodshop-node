@@ -64,7 +64,7 @@ class CreateTTLMQ {
         console.log(`received time: ${new Date()}`)
         // 接收json字符串
         const receiveJsonData = JSON.parse(msg.content.toString())
-        ConsumerReceivedCB && ConsumerReceivedCB.constructor === Function && ConsumerReceivedCB(receiveJsonData)
+        ConsumerReceivedCB && typeof ConsumerReceivedCB === 'function' && ConsumerReceivedCB(receiveJsonData)
 
         // [note] 消费者发送ack确认收到消息
         channel.ack(msg)

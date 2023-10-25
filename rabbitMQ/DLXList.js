@@ -10,26 +10,24 @@
  * note: 两种类型在配置时是根据 ExtraConf 配置项的 useQueueExpiredTime 字段区分，默认使用模式1
  */
 
+const { orderPayCallback, sendOrderCallback } = require("./DLXCallbackList")
 
 const MQDLXList = {
   orderPay: {
     DLXKey: 'orderPay',
     ExtraConf: {
       useQueueExpiredTime: true,
-      expiredQueueTime: 10 * 1000
+      // expiredQueueTime: 15 * 60 * 1000 // 支付超时15分钟后取消订单
+      expiredQueueTime: 10 * 1000 // 支付超时15分钟后取消订单
     },
-    ConsumerReceivedCB: (data) => {
-      console.log('data____', data)
-    }
+    ConsumerReceivedCB: orderPayCallback,
   },
   sendOrder: {
     DLXKey: 'sendOrder',
     ExtraConf: {
       useQueueExpiredTime: false
     },
-    ConsumerReceivedCB: (data) => {
-      console.log('datas____', data)
-    }
+    ConsumerReceivedCB: sendOrderCallback
   }
 }
 
