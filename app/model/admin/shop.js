@@ -24,7 +24,9 @@ const ShopSchema = new Schema({
     avatar: String,
     business_licence: String,
     food_licence: String
-  }
+  },
+  has_discount: Boolean,
+  discount_Arr: Array
 })
 
 ShopSchema.plugin(AutoEnhanceIndexPlugin, { model: 'shop', field: 'id' })   // 注册自增插件

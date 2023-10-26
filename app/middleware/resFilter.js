@@ -22,10 +22,10 @@ const handleResponse = (req, res, next) => {
   // 重写res.json方法，拦截返回数据
   res.json = function (params) {
     const { code = 1, data = null, msg, errLog } = params
-    if (code === 1) {
+    if (code === 1 || code === 200) {
       // 请求成功响应
       params = {
-        code: 1,
+        code: code,
         msg: msg || 'success',
         data,
         stime: new Date().getTime()

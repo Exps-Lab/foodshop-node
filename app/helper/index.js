@@ -1,18 +1,19 @@
 const Parameter = require('parameter');
 const { Snowflake } = require('@sapphire/snowflake')
 const CtoPin = require('./dictionary')
+const calcGoodsFuns = require('./calcGoodsPrice')
 
 // 处理时间格式
 Date.prototype.formatTime = formatTime;
 function formatTime (fmt) {
   let o = {
-      "M+": this.getMonth() + 1,
-      "d+": this.getDate(),
-      "h+": this.getHours(),
-      "m+": this.getMinutes(),
-      "s+": this.getSeconds(),
-      "q+": Math.floor((this.getMonth() + 3) / 3),
-      "S": this.getMilliseconds()
+    "M+": this.getMonth() + 1,
+    "d+": this.getDate(),
+    "h+": this.getHours(),
+    "m+": this.getMinutes(),
+    "s+": this.getSeconds(),
+    "q+": Math.floor((this.getMonth() + 3) / 3),
+    "S": this.getMilliseconds()
   };
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
@@ -37,16 +38,6 @@ function validate (rule={}, req) {
 }
 
 /**
- * 生成uuid
- * @return {string}
- */
-function uuid () {
-  const random = (Math.random() * Math.pow(2, 32)).toString(36);
-  const timestamp = new Date().getTime();
-  return 'u-' + timestamp + '-' + random;
-}
-
-/**
  * 加密手机号中间四位
  * @param phone
  * @returns {string}
@@ -57,6 +48,14 @@ function cryptoPhone (phone = null) {
   }
   const strPhone = phone.toString()
   return strPhone.slice(0, 3) + '****' + strPhone.slice(7)
+}
+
+// 生成订单id, 19位
+// 商铺id + 用户id + 雪花算法
+function generateOrderNumber(shopId, uId) {
+  if (!shopId || !uId) return new Error('shopId和用户id是必传的!')
+  const uniqStr = snowFlake().slice(4)
+  return String(`${shopId}${uId}${uniqStr}`)
 }
 
 // 雪花算法生成唯一id
@@ -70,7 +69,8 @@ module.exports = {
   formatTime,
   validate,
   CtoPin,
-  uuid,
   cryptoPhone,
-  snowFlake
+  snowFlake,
+  generateOrderNumber,
+  ...calcGoodsFuns
 }

@@ -6,8 +6,16 @@ class HomeController {
   async shopList (req, res) {
     try {
       _common.validate({
+        page_num: {
+          type: 'number?',
+          convertType: 'number'
+        },
+        page_size: {
+          type: 'number?',
+          convertType: 'number'
+        },
         distance: {
-          type: 'number',
+          type: 'number?',
           convertType: 'number',
         },
         current_pos: 'string?',

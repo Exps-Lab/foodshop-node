@@ -1,10 +1,11 @@
 const ShopModel = require('../../../model/admin/shop')
 const foodCategoryModel = require('../../../model/admin/food-category')
+const OrderCommentService = require('../../../service/h5/comment')
+const UserCollectService = require('../../../service/h5/user/collect')
 const foodModel = require('../../../model/admin/food')
 const PosBase = require("../../base-class/pos-base")
 const ShopBase = require('../../base-class/shop-base')
 const { shoppingBagPreKey } = require('../../../redis-prekey')
-const orderPayProducer = require('../../../../rabbitMQ/orderPay/producer')
 
 class ShopService extends ShopBase {
   constructor(props) {
@@ -109,10 +110,18 @@ class ShopService extends ShopBase {
   // 获取商铺基本信息
   async shopBaseInfoService (req, res) {
     try {
+      const { u_id } = req.session
       const { shop_id, current_pos } = req.query
-      const shopInfo = await ShopModel.findOne({ id: shop_id }, { admin_uid: 0, _id:0, __v: 0 }).lean(true)
-      const [ userLat, userLng ] = current_pos.split(',')
+      const shopInfo = await this.getShopBaseInfo(shop_id)
+      // 添加其他基本信息
+      // 包含该商品总评论数，送达大约时间
+      const commentCount = await OrderCommentService.getCommentCount({ shop_id })
+      const shopCollected = u_id ? await UserCollectService.isShopCollected(u_id, shop_id) : false
+      const [userLat, userLng] = current_pos.split(',')
       const { lat, lng } = shopInfo.pos
+
+      shopInfo.comment_count = commentCount
+      shopInfo.shopCollected = shopCollected
       shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`) || 0
       res.json({
         data: shopInfo
@@ -214,23 +223,26 @@ class ShopService extends ShopBase {
       const { u_id } = req.session
       const { shop_id, chose_goods_list } = req.body
 
-      // const ShoppingBagKey = `sale:shoppingBag:${u_id}`
+      // const ShoppingBagKey = `sale:shoppingBag:snowFlake19位随机`
       const { key, expireTime } = shoppingBagPreKey
-      const ShoppingBagKey = `${key}:${u_id}`
+      const shoppingBagId = _common.snowFlake()
+      const ShoppingBagKey = `${key}:${shoppingBagId}`
       const choseGoodsArr = {
         shop_id,
         choseGoods: chose_goods_list
       }
       // 事务处理添加并设置过期时间
       await RedisInstance.set(ShoppingBagKey, choseGoodsArr, expireTime)
-      // [test] 发送有效期15分钟的支付消息，超时取消订单
-      const mesStr = JSON.stringify({
-        name: 'aaa'
-      })
-      await orderPayProducer.productMessage(mesStr)
+
+      // const orderPayMQInstance = await global._common.getMQInstance('sendOrder')
+      // // [test] 发送有效期15分钟的支付消息，超时取消订单
+      // const mesStr = JSON.stringify({
+      //   name: 'fff'
+      // })
+      // await orderPayMQInstance.productMessage(mesStr, 15 * 1000)
 
       res.json({
-        data: ShoppingBagKey
+        data: shoppingBagId
       })
     } catch (err) {
       res.json({

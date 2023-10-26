@@ -2,20 +2,21 @@
 const chalk = require('chalk')
 const amqplib = require('amqplib');
 
+const MQDLXList = require('./DLXList')
+const CreateTTLMQ = require('./createTTLMQ')
+
 class MQConstruct {
+  #connInstance = null
+  mqInstanceMap = {}
   constructor() {
-    // [note] 死信交换机和要发送信息的routingKey的定义
-    this.orderPayDLXKeys = {
-      DLXExchange: 'orderPayExDLX',
-      DLXRoutingKey: 'orderPayMessage'
-    }
+    this.initMQ()
   }
-  static _connInstance = null
   async initMQ () {
-    if (MQConstruct._connInstance === null) {
-      MQConstruct._connInstance = this.getConn()
+    if (this.#connInstance === null) {
+      this.#connInstance = await this.getConn()
     }
-    return MQConstruct._connInstance
+
+    await this.registerMQ()
   }
   async getConn () {
     return new Promise(resolve => {
@@ -27,6 +28,30 @@ class MQConstruct {
       return conn
     })
   }
+
+  // 注册所有的mq
+  async registerMQ () {
+    Object.keys(MQDLXList).forEach(mqKey => {
+      const mqConf = MQDLXList[mqKey]
+      mqConf.MQInstance = this.#connInstance
+
+      this.mqInstanceMap[mqKey] = new CreateTTLMQ(mqConf)
+    })
+  }
+
+  // 获取某个mq实例，便于发送mq消息
+  getMQIns (mqKey) {
+    if (!mqKey) {
+      throw new Error('请传入要获取的mqKey值')
+    }
+    return this.mqInstanceMap[mqKey] || null
+  }
 }
 
-module.exports = MQConstruct
+const RabbitMQIns = new MQConstruct()
+// 方法绑定全局
+global._common.getMQInstance = RabbitMQIns.getMQIns.bind(RabbitMQIns)
+
+module.exports = {
+  getMQInstance: RabbitMQIns.getMQIns
+}

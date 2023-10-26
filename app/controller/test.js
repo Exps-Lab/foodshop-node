@@ -31,11 +31,97 @@ class TestController extends BasePosClass {
   }
 
   async sessionDemo (req, res) {
-    const { id } = req.query
-    const data = await _common.RedisInstance.hDel('aaa', 'age')
-    console.log(data)
+    // const { id } = req.query
+    // const data = await _common.RedisInstance.hDel('aaa', 'age')
+    // console.log(data)
+    // res.json({
+    //   data
+    // })
     res.json({
-      data
+      code: 200,
+      data: {
+        "list": [{
+          "id": 2,
+          "isMainly": 1,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史",
+          "country": '泰国',
+          "area": "普吉岛是最大",
+          "usableArea": "36.2㎡",
+          "deliveryType": '现房',
+          "rentIncome": 123.33,
+          "minAmount": 5579712,
+          "maxAmount": 1234712,
+          "currency": '人民币',
+        }, {
+          "id": 1,
+          "isMainly": 0,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史上最强之U2上最上最UTOPIA史上最强之U2上最上最",
+          "country": '泰国',
+          "area": "普吉岛这是最大普吉岛这是最大",
+          "usableArea": "25.5-36.2㎡",
+          "deliveryType": '期房',
+          "rentIncome": 12,
+          "minAmount": 230,
+          "maxAmount": 400,
+          "currency": '人民币',
+        }, {
+          "id": 1,
+          "isMainly": 0,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史上最强之U2上最上最UTOPIA史上最强之U2上最上最",
+          "country": '泰国',
+          "area": "普吉岛这是最大普吉岛这是最大",
+          "usableArea": "25.5-36.2㎡",
+          "deliveryType": '期房',
+          "rentIncome": 12,
+          "minAmount": 230,
+          "maxAmount": 400,
+          "currency": '人民币',
+        }, {
+          "id": 1,
+          "isMainly": 0,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史上最强之U2上最上最UTOPIA史上最强之U2上最上最",
+          "country": '泰国',
+          "area": "普吉岛这是最大普吉岛这是最大",
+          "usableArea": "25.5-36.2㎡",
+          "deliveryType": '期房',
+          "rentIncome": 12,
+          "minAmount": 230,
+          "maxAmount": 400,
+          "currency": '人民币',
+        }, {
+          "id": 1,
+          "isMainly": 0,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史上最强之U2上最上最UTOPIA史上最强之U2上最上最",
+          "country": '泰国',
+          "area": "普吉岛这是最大普吉岛这是最大",
+          "usableArea": "25.5-36.2㎡",
+          "deliveryType": '期房',
+          "rentIncome": 12,
+          "minAmount": 230,
+          "maxAmount": 400,
+          "currency": '人民币',
+        }, {
+          "id": 1,
+          "isMainly": 0,
+          "coverImage": 'https://static-cdn.kunyuanfund.com/photo/haiwai_icon.png',
+          "title": "UTOPIA史上最强之U2上最上最UTOPIA史上最强之U2上最上最",
+          "country": '泰国',
+          "area": "普吉岛这是最大普吉岛这是最大",
+          "usableArea": "25.5-36.2㎡",
+          "deliveryType": '期房',
+          "rentIncome": 12,
+          "minAmount": 230,
+          "maxAmount": 400,
+          "currency": '人民币',
+        }],
+        "total": 16,
+        "hasNextPage": false
+      }
     })
   }
 

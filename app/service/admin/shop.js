@@ -89,7 +89,7 @@ class ShopService extends ShopBase {
   async getDetail (req, res) {
     const { id } = req.query
     try {
-      const data = await ShopModel.findOne({ id }, '-_id -__v').lean(true)
+      const data = await this.getShopBaseInfo(id)
       res.json({
         data
       })

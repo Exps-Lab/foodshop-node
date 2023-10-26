@@ -1,3 +1,6 @@
+// 加载全局方法
+require('./app/global')
+
 const express = require('express')
 const app = express()
 const cookieParser = require('cookie-parser')
@@ -6,10 +9,8 @@ const RouterMap = require('./app/router/index')
 const middleware = require('./app/middleware')
 const { sessionConf } = require('./conf/index')
 
-// 加载全局方法
-require('./app/global')
 // 加载rabbitMQ配置
-require('./rabbitMQ/initMQ')
+require('./rabbitMQ/index')
 // 加载数据库配置
 require('./mongoDB/index')
 // 加载redis配置
