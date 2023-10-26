@@ -17,8 +17,7 @@ const MQDLXList = {
     DLXKey: 'orderPay',
     ExtraConf: {
       useQueueExpiredTime: true,
-      // expiredQueueTime: 15 * 60 * 1000 // 支付超时15分钟后取消订单
-      expiredQueueTime: 10 * 1000 // 支付超时15分钟后取消订单
+      expiredQueueTime: 15 * 60 * 1000 // 支付超时15分钟后取消订单
     },
     ConsumerReceivedCB: orderPayCallback,
   },
