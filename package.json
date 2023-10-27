@@ -6,7 +6,8 @@
   "scripts": {
     "start": "supervisor -p 2000 index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "upload-remote -r ./app -n exp-express"
+    "deploy": "upload-remote -r ./app -n exp-express",
+    "tag": "bash build/new_tag.sh"
   },
   "keywords": [
     "express"
