@@ -10,7 +10,7 @@ class ShopController {
           type: 'number',
           convertType: 'number',
         },
-        current_pos: 'string'
+        current_pos: 'string?'
       }, req)
     } catch (err) {
       res.json({
