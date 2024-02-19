@@ -11,8 +11,8 @@ fi
 Host="127.0.0.1:28017"
 DBName="elm_db"
 TimeNow=`date "+%Y-%m-%d_%H:%M:%S"`
-BackendPath="/home/website/db-backend"
-LogPath="/home/website/db-backend/$TimeNow/dblog.log"
+BackendPath="/var/www/db-backend"
+LogPath="/var/www/db-backend/$TimeNow/dblog.log"
 
 # 日志输出函数
 function insertLog(){
@@ -41,6 +41,7 @@ END
 
 # 全量覆盖恢复数据库
 #mongorestore -h $Host -d $DBName --dir $BackendPath --gzip --drop
+#mongorestore -h 127.0.0.1:28017 -d elm_db --dir /var/www/db-backend/2023-11-16_00:00:02/elm_db --gzip --drop
 
 
 
