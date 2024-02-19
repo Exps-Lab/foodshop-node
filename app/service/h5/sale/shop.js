@@ -111,7 +111,7 @@ class ShopService extends ShopBase {
   async shopBaseInfoService (req, res) {
     try {
       const { u_id } = req.session
-      const { shop_id, current_pos } = req.query
+      const { shop_id, current_pos = ',' } = req.query
       const shopInfo = await this.getShopBaseInfo(shop_id)
       // 添加其他基本信息
       // 包含该商品总评论数，送达大约时间
@@ -122,7 +122,9 @@ class ShopService extends ShopBase {
 
       shopInfo.comment_count = commentCount
       shopInfo.shopCollected = shopCollected
-      shopInfo.send_time = await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`) || 0
+      shopInfo.send_time = (userLat && userLng)
+        ? await this.getEBicyclingCostTime(`${userLat},${userLng}`, `${lat},${lng}`)
+        : '暂无'
       res.json({
         data: shopInfo
       })
