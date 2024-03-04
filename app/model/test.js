@@ -8,4 +8,4 @@ const PostSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('KyVideo', PostSchema);
+module.exports = mongoose.model('test', PostSchema);
