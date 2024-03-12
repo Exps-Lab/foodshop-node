@@ -39,11 +39,11 @@ npm run start
 
 ## 相关文档：
 #### 参考项目以及开发过程中的技术选型：
-  wiki：(https://github.com/exp-express/exp-express/wiki)
+  wiki：https://github.com/Exps-Lab/foodshop-node/wiki/foodshop%E2%80%90node-wiki
 #### 项目表结构设计：
-  wiki：https://github.com/exp-express/exp-express/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1
-#### 各业务场景api:
-  wiki：https://github.com/exp-express/exp-express/wiki/%E7%B1%BBelm%E5%B9%B3%E5%8F%B0-server-%E6%96%87%E6%A1%A3
+  wiki：https://github.com/Exps-Lab/foodshop-node/wiki/FoodShop-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3
+#### 各业务场景 接口文档:
+  wiki：https://github.com/Exps-Lab/foodshop-node/wiki/FoodShop-%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3
 
 ## 项目结构简介
 ```
