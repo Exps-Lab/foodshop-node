@@ -34,14 +34,12 @@ npm run start
 | foodshop-admin | FoodShop售卖系统——admin管理后台端| Vue3 + Vite + Arco.design + SPA                                        | https://github.com/Exps-Lab/foodshop-admin     |
 
 ## 相关文档：
-```
-* 参考项目以及开发过程中的技术选型：
+#### 参考项目以及开发过程中的技术选型：
   wiki：(https://github.com/exp-express/exp-express/wiki)
-* 项目表结构设计：
+#### 项目表结构设计：
   wiki：https://github.com/exp-express/exp-express/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1
-* 各业务场景api:
+#### 各业务场景api:
   wiki：https://github.com/exp-express/exp-express/wiki/%E7%B1%BBelm%E5%B9%B3%E5%8F%B0-server-%E6%96%87%E6%A1%A3
-```
 
 ## 项目结构简介
 ```
