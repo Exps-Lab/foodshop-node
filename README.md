@@ -22,6 +22,11 @@ npm install
 npm run start
 
 ```
+## 特殊场景实现
+>- **订单支付**：目前是以 “餐币” 承载支付，账户不足可以在用户端账户页面自行充值！
+
+>- **订单超时取消 / 订单配送(虚拟)**： rabbitmq延时任务实现，业务计算配送时间，超过时间自行取消订单 或 商品已送达
+
 ## 效果演示
 #### h5端线上效果演示，直接扫码体验：
 <img width="200" src="http://static.foodshops.fun/ns6dBb2iJWbteQi.png" alt="qrcode">
@@ -45,70 +50,67 @@ npm run start
 ```
 .
 ├── README.md
-├── app
-│   ├── controller
-│   │   ├── admin
-│   │   ├── h5
+├── app                                    所有业务代码文件
+│   ├── controller                         控制器：
+│   │   ├── admin                                管理后台 控制器
+│   │   ├── h5                                   用户端 控制器
 │   │   └── test.js
-│   ├── global.js
-│   ├── helper
+│   ├── global.js                                全局方案方法统一绑定
+│   ├── helper                                   helper工具库
 │   │   ├── calcGoodsPrice.js
-│   │   ├── captcha.js
-│   │   ├── dictionary.js
-│   │   ├── fetch.js
+│   │   ├── captcha.js                           验证码
+│   │   ├── dictionary.js                        中英文转换搜索码表
+│   │   ├── fetch.js                             fetch请求封装
 │   │   └── index.js
-│   ├── middleware
-│   │   ├── gateway.js
+│   ├── middleware                               中间件
+│   │   ├── gateway.js                           统一简单网关，处理auth接口拦截等
 │   │   ├── index.js
-│   │   └── resFilter.js
-│   ├── model
-│   │   ├── admin
-│   │   ├── common
-│   │   ├── h5
+│   │   └── resFilter.js                         接口返回格式统一封装
+│   ├── model                              model数据层：
+│   │   ├── admin                                管理后台相关
+│   │   ├── common                               公共逻辑
+│   │   ├── h5                                   用户端相关
 │   │   └── test.js
-│   ├── plugin
-│   │   └── autoEnhanceIndex.js
-│   ├── redis-prekey
+│   ├── plugin                             plugin相关：
+│   │   └── autoEnhanceIndex.js                  数据库自增
+│   ├── redis-prekey                       redis的所有key值统一维护
 │   │   └── index.js
-│   ├── router
-│   │   ├── admin
-│   │   ├── h5
+│   ├── router                             接口路由表：
+│   │   ├── admin                                用户端 接口路由
+│   │   ├── h5                                   管理后台 接口路由
 │   │   ├── index.js
 │   │   └── test.js
-│   └── service
-│       ├── admin
-│       ├── base-class
-│       ├── h5
+│   └── service                            service业务层：
+│       ├── admin                                管理后台 service业务层
+│       ├── base-class                           base 公用的业务封装
+│       ├── h5                                   用户端 service业务层
 │       └── test.js
-├── build
-│   └── new_tag.sh
-├── conf
+├── conf                                   mongodb，redis，log等配置：
 │   └── index.js
-├── index.js
-├── initSql
-│   ├── category.js
-│   ├── city.js
+├── index.js                               初始化项目：
+├── initSql                                部分需要初始化数据库操作：
+│   ├── category.js                              商品分类表
+│   ├── city.js                                  城市表
 │   ├── index.js
-│   ├── menu.js
+│   ├── menu.js                                  admin菜单表
 │   ├── originData
 │   │   ├── category.min.js
 │   │   └── city.min.js
-│   ├── role.js
-│   └── user.js
-├── logger.js
+│   ├── role.js                                  admin角色表
+│   └── user.js                                  用户端用户表
+├── logger.js                              logger埋点封装
 ├── mongoDB
-│   ├── dbBackend.shell
-│   └── index.js
-├── package-lock.json
+│   ├── dbBackend.shell                          数据库备份脚本：
+│   └── index.js                                 数据库配置项：
 ├── package.json
-├── rabbitMQ
-│   ├── DLXCallbackList.js
-│   ├── DLXKeyMap.js
-│   ├── DLXList.js
-│   ├── createTTLMQ.js
+├── rabbitMQ                               rabbitMQ相关：
+│   ├── DLXCallbackList.js                       mq延时任务回调配置
+│   ├── DLXKeyMap.js                             mq延时任务Key值表
+│   ├── DLXList.js                               mq延时任务列表
+│   ├── createTTLMQ.js                           mq创建
 │   └── index.js
-├── redis
-│   └── index.js
+├── redis                                  redis相关：
+│   └── index.js                                 redis配置
 
 26 directories, 40 files
 
