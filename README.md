@@ -10,8 +10,6 @@
 node(v14.20) + express(v4.17.3) + mongoDB(v4.2.12) + mongoose(^6.2.8) + redis(v7.0.5) + rabbitMQ(v3.13.0) + 自定义logger分割
 
 ## 项目运行
->- TIPS: 项目运行前 请先安装并启动mongoDB，redis以及rabbitmq的对应版本，保证数据和缓存的正常存取。
-
 ```
 git clone https://github.com/Exps-Lab/foodshop-node.git
 
@@ -20,8 +18,9 @@ cd foodshop-node
 npm install
 
 npm run start
-
 ```
+> **Tips：项目运行前 请先安装并启动 mongoDB，redis以及rabbitmq，保证数据和缓存的正常存取和所有功能正常使用。目前foodshop-h5用户端项目数据都是从接口获取的真实数据！**
+
 ## 特殊场景实现
 >- **订单支付**：目前是以 “餐币” 承载支付，账户不足可以在用户端账户页面自行充值！
 
