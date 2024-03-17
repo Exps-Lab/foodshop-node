@@ -130,7 +130,8 @@ class OrderCommentService {
     const searchObj = {
       u_id,
       pageNum,
-      pageSize
+      pageSize,
+      order_status: 4 //
     }
     searchObj.comment_id = (type === 0) ? null : { "$ne": null }
     // 是否需要 联表查 评论详情

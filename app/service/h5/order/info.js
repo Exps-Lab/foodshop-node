@@ -161,7 +161,9 @@ class OrderInfoService extends PosBase {
             user: 0
           }
         }
-      ])
+      ]).sort({
+        create_time: -1
+      })
       paginationMap.total = await OrderModal.find(searchObj).count()
       paginationMap.hasNext = (paginationMap.total > pageNum * pageSize)
 
