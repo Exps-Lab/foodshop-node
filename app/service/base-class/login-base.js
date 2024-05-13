@@ -162,7 +162,7 @@ class LoginBase {
       const h5UserInfoKey = `${this.h5UserInfoPreKey.key}:${u_id}`
 
       const userData = await RedisInstance.hGetAll(h5UserInfoKey)
-      return userData.u_id ? userData : null
+      return userData?.u_id ? userData : null
     })
   }
 
