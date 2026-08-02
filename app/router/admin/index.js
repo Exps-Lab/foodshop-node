@@ -7,6 +7,7 @@ const CommonInfoController = require('../../controller/admin/common')
 const ShopController = require('../../controller/admin/shop')
 const FoodCategoryController = require('../../controller/admin/food-category')
 const FoodController = require('../../controller/admin/food')
+const AiController = require('../../controller/admin/ai')
 
 // common
 router.get('/auth/getCommonInfo', CommonInfoController.getCommonInfo)
@@ -46,5 +47,8 @@ router.get('/auth/food/detail', FoodController.foodDetail)
 router.post('/auth/food/add', FoodController.addFood)
 router.post('/auth/food/delete', FoodController.deleteFood)
 router.post('/auth/food/update', FoodController.updateFood)
+
+// ai
+router.get('/auth/ai/genShopDesc', AiController.genShopDesc)
 
 module.exports = router

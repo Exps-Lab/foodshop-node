@@ -26,6 +26,8 @@ class MQConstruct {
         chalk.blue('rabbitMQ连接成功')
       );
       return conn
+    }).catch(error => {
+      console.log("rabbitMQ连接报错：" + error)
     })
   }
 

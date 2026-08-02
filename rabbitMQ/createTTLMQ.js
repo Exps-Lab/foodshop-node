@@ -19,7 +19,7 @@ class CreateTTLMQ {
   producerChannel = null
   producerExpiredQueue = null
   constructor(props) {
-    if (props.MQInstance === null) {
+    if (props.MQInstance === null || props.MQInstance === undefined) {
       throw new Error('请先创建mq实例!')
     }
     this.init(props)

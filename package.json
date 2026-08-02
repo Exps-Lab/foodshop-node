@@ -6,7 +6,7 @@
   "scripts": {
     "start": "supervisor -p 2000 index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "upload-remote -r ./app -n exp-express",
+    "deploy": "upload-remote -r ./ -n exp-express",
     "tag": "bash build/new_tag.sh"
   },
   "keywords": [
@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@sapphire/snowflake": "^3.4.2",
-    "amqplib": "^0.10.3",
+    "amqplib": "^0.10.7",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
@@ -24,6 +24,7 @@
     "mongoose": "^6.2.8",
     "mongoose-sequence": "^5.3.1",
     "node-fetch": "^2.6.7",
+    "ollama": "^0.6.3",
     "parameter": "^3.6.0",
     "qiniu": "^7.7.0",
     "redis": "^4.5.0"
