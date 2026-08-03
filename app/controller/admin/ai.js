@@ -34,7 +34,13 @@ class AiController {
       return
     }
 
-    await AiService.genShopDesc(req, res)
+    // 默认非流式模式，通过 stream 参数区分
+    const stream = !!req.query.stream
+    if (stream) {
+      await AiService.genShopDescStream(req, res)
+    } else {
+      await AiService.genShopDesc(req, res)
+    }
   }
 }
 

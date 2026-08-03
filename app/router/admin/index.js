@@ -48,7 +48,7 @@ router.post('/auth/food/add', FoodController.addFood)
 router.post('/auth/food/delete', FoodController.deleteFood)
 router.post('/auth/food/update', FoodController.updateFood)
 
-// ai
+// ai - 通过 query.stream=true 启用流式输出，默认非流式模式
 router.get('/auth/ai/genShopDesc', AiController.genShopDesc)
 
 module.exports = router
