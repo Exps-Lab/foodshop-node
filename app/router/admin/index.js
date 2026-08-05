@@ -8,6 +8,7 @@ const ShopController = require('../../controller/admin/shop')
 const FoodCategoryController = require('../../controller/admin/food-category')
 const FoodController = require('../../controller/admin/food')
 const AiController = require('../../controller/admin/ai')
+const CouponController = require('../../controller/admin/coupon')
 
 // common
 router.get('/auth/getCommonInfo', CommonInfoController.getCommonInfo)
@@ -50,5 +51,12 @@ router.post('/auth/food/update', FoodController.updateFood)
 
 // ai - 通过 query.stream=true 启用流式输出，默认非流式模式
 router.get('/auth/ai/genShopDesc', AiController.genShopDesc)
+
+// 优惠券管理
+router.get('/auth/coupon/list', CouponController.getCouponList)
+router.get('/auth/coupon/detail', CouponController.getCouponDetail)
+router.post('/auth/coupon/add', CouponController.addCoupon)
+router.post('/auth/coupon/update', CouponController.updateCoupon)
+router.post('/auth/coupon/delete', CouponController.deleteCoupon)
 
 module.exports = router

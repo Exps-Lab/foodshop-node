@@ -17,6 +17,10 @@ const UserSchema = new Schema({
     type: String,
     default: 'http://static.foodshop.fun/WzEaxHRQsmA2rea.png'
   },
+  coupon_ids: {
+    type: String,
+    default: ''
+  },
   c_time: Number,
 });
 

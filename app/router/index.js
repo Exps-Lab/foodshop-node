@@ -5,6 +5,7 @@ const H5User = require('./h5/user')
 const H5Sale = require('./h5/sale')
 const H5Order = require('./h5/order')
 const H5Pay = require('./h5/pay')
+const H5Coupon = require('./h5/coupon')
 
 module.exports =  (app)  => {
   // 默认访问
@@ -20,4 +21,5 @@ module.exports =  (app)  => {
   app.use('/h5/sale', H5Sale)
   app.use('/h5/order', H5Order)
   app.use('/h5/pay', H5Pay)
+  app.use('/h5/coupon', H5Coupon)
 }
