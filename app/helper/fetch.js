@@ -46,6 +46,9 @@ async function request (url, data, options) {
   const requestOptions = options
     ? { ...defaultOptions, ...options }
     : { ...defaultOptions }
+  requestOptions.headers['Referer'] = 'http://foodshops.fun'
+
+
 
   const res = await fetch(url, requestOptions)
 
