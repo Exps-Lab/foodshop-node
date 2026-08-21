@@ -9,3 +9,7 @@ run/
 *.swp
 *.lock
 package-lock.json
+
+# 敏感信息文件（包含密码等）
+.env
+secrets/

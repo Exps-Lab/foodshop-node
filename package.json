@@ -17,6 +17,7 @@
   "dependencies": {
     "@sapphire/snowflake": "^3.4.2",
     "amqplib": "^0.10.7",
+    "chalk": "^4.1.2",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
@@ -30,7 +31,6 @@
     "redis": "^4.5.0"
   },
   "devDependencies": {
-    "chalk": "^4.1.2",
     "supervisor": "^0.12.0"
   }
 }

@@ -42,8 +42,3 @@ END
 # 全量覆盖恢复数据库
 #mongorestore -h $Host -d $DBName --dir $BackendPath --gzip --drop
 #mongorestore -h 127.0.0.1:28017 -d elm_db --dir /var/www/db-backend/2023-11-16_00:00:02/elm_db --gzip --drop
-
-
-
-
-

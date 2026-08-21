@@ -2,19 +2,21 @@ const MongoStore = require('connect-mongo')
 
 const CommonConf = {}
 
-// mongoose配置
+// mongoose配置 - 支持环境变量覆盖
 CommonConf.mongoose = {
-  url: 'mongodb://127.0.0.1:28017/elm_db',
+  url: process.env.MONGO_URL || 'mongodb://127.0.0.1:28017/elm_db',
   options: {
     useUnifiedTopology: true,
     useFindAndModify: false,
   }
 }
 
-// redis配置
+// redis配置 - 支持环境变量覆盖（node-redis v4 格式）
 CommonConf.redis = {
-  host: '127.0.0.1',
-  port: '6379',
+  socket: {
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  }
 }
 
 // logger配置
@@ -88,11 +90,11 @@ CommonConf.sessionConf = {
   }
 };
 
-// 七牛云密钥配置
+// 七牛云密钥配置 - 支持环境变量覆盖
 CommonConf.qiniuConf = {
-  bucket: 'elm-dev',
-  accessKey: 'rxQBQramPpIBL3SXctbUzJ66UtHQlfrSgykvV6_A',
-  secretKey: '3ZmafmqYFvQW2fe0_JtC0FLl7mjxQ_FRiw-g__1K'
+  bucket: process.env.QINIU_BUCKET || 'elm-dev',
+  accessKey: process.env.QINIU_ACCESS_KEY || '',
+  secretKey: process.env.QINIU_SECRET_KEY || ''
 }
 
 module.exports = CommonConf

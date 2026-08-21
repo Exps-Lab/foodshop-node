@@ -19,8 +19,14 @@ class MQConstruct {
     await this.registerMQ()
   }
   async getConn () {
+    const rabbitmqUser = process.env.RABBITMQ_DEFAULT_USER || 'guest'
+    const rabbitmqPass = process.env.RABBITMQ_DEFAULT_PASS || 'guest'
+    const rabbitmqHost = process.env.RABBITMQ_HOST || 'localhost'
+    const rabbitmqPort = process.env.RABBITMQ_PORT || '5672'
+    const rabbitmqUrl = `amqp://${rabbitmqUser}:${rabbitmqPass}@${rabbitmqHost}:${rabbitmqPort}`
+    
     return new Promise(resolve => {
-      resolve(amqplib.connect('amqp://localhost:5672'))
+      resolve(amqplib.connect(rabbitmqUrl))
     }).then(conn => {
       console.log(
         chalk.blue('rabbitMQ连接成功')

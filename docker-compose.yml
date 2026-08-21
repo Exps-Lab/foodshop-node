@@ -1,0 +1,175 @@
+services:
+  # MongoDB 服务
+  mongodb:
+    image: mongo:4.2.12
+    container_name: foodshop-mongodb
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MONGO_PORT:-28017}:28017"
+    command: mongod --port 28017
+    environment:
+      MONGO_INITDB_DATABASE: elm_db
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - foodshop-network
+    healthcheck:
+      test: ["CMD-SHELL", "mongo --port 28017 --quiet --username $$MONGO_INITDB_ROOT_USERNAME --password $$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin --eval 'db.runCommand(\"ping\").ok'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # Redis 服务
+  redis:
+    image: redis:7-alpine
+    container_name: foodshop-redis
+    restart: always
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: ["sh", "-c", "if [ -n \"$$REDIS_PASSWORD\" ]; then redis-server --appendonly yes --requirepass $$REDIS_PASSWORD; else redis-server --appendonly yes; fi"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - foodshop-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ 服务
+  rabbitmq:
+    image: rabbitmq:3.10.5-management-alpine
+    container_name: foodshop-rabbitmq
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - foodshop-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js 应用服务
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: foodshop-nodeApp
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - MONGO_URL=${MONGO_URL}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - RABBITMQ_HOST=${RABBITMQ_HOST:-rabbitmq}
+      - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
+      - QINIU_BUCKET=${QINIU_BUCKET:-elm-dev}
+      - QINIU_ACCESS_KEY=${QINIU_ACCESS_KEY}
+      - QINIU_SECRET_KEY=${QINIU_SECRET_KEY}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - foodshop-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # H5 前端应用（已注释 - 当前模式：后端+基础设施）
+  # h5-app:
+  #   build:
+  #     context: ../foodshop-h5
+  #     dockerfile: Dockerfile
+  #   container_name: foodshop-h5-app
+  #   restart: always
+  #   volumes:
+  #     - h5_dist:/usr/share/nginx/html/hi-user
+  #   networks:
+  #     - foodshop-network
+
+  # Admin 管理后台应用（已注释 - 当前模式：后端+基础设施）
+  # admin-app:
+  #   build:
+  #     context: ../foodshop-admin
+  #     dockerfile: Dockerfile
+  #   container_name: foodshop-admin-app
+  #   restart: always
+  #   volumes:
+  #     - admin_dist:/usr/share/nginx/html/admin-user
+  #   networks:
+  #     - foodshop-network
+
+  # Nginx 反向代理
+  nginx:
+    image: nginx:1.24-alpine
+    container_name: foodshop-nginx
+    restart: always
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.d:/etc/nginx/default.d:ro
+      - ./logs/nginx:/var/log/nginx
+      # - h5_dist:/usr/share/nginx/html/hi-user:ro
+      # - admin_dist:/usr/share/nginx/html/admin-user:ro
+    depends_on:
+      - node-app
+      # - h5-app
+      # - admin-app
+    networks:
+      - foodshop-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/nginx-health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  foodshop-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  h5_dist:
+    driver: local
+  admin_dist:
+    driver: local
