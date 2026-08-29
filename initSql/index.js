@@ -12,8 +12,10 @@ const initFn = {
   initCategory,
 }
 
-module.exports = function init () {
-  Object.values(initFn).forEach(fn => {
-    fn.constructor === Function && fn()
-  })
+module.exports = async function init () {
+  for (const fn of Object.values(initFn)) {
+    if (typeof fn === 'function') {
+      await fn()
+    }
+  }
 }

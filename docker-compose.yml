@@ -67,12 +67,30 @@ services:
       timeout: 5s
       retries: 5
 
+  # 数据库初始化服务（一次性执行）
+  node-init:
+    image: ${DOCKER_USER}/foodshop
+    container_name: foodshop-init
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=${MONGO_URL}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    command: ["node", "scripts/init-db.js"]
+    networks:
+      - foodshop-network
+    restart: "no"
+
   # Node.js 应用服务
-  node-app:
+  node:
+    image: ${DOCKER_USER}/foodshop
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: foodshop-nodeApp
+    container_name: foodshop
     restart: always
     env_file:
       - .env
@@ -98,6 +116,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      node-init:
+        condition: service_completed_successfully
     networks:
       - foodshop-network
     healthcheck:
@@ -107,29 +127,29 @@ services:
       retries: 3
       start_period: 40s
 
-  # H5 前端应用（已注释 - 当前模式：后端+基础设施）
-  # h5-app:
-  #   build:
-  #     context: ../foodshop-h5
-  #     dockerfile: Dockerfile
-  #   container_name: foodshop-h5-app
-  #   restart: always
-  #   volumes:
-  #     - h5_dist:/usr/share/nginx/html/hi-user
-  #   networks:
-  #     - foodshop-network
+  # H5 前端应用
+  h5-app:
+    build:
+      context: ../foodshop-h5
+      dockerfile: Dockerfile
+    container_name: foodshop-h5-app
+    restart: always
+    volumes:
+      - h5_dist:/usr/share/nginx/html/hi-user
+    networks:
+      - foodshop-network
 
-  # Admin 管理后台应用（已注释 - 当前模式：后端+基础设施）
-  # admin-app:
-  #   build:
-  #     context: ../foodshop-admin
-  #     dockerfile: Dockerfile
-  #   container_name: foodshop-admin-app
-  #   restart: always
-  #   volumes:
-  #     - admin_dist:/usr/share/nginx/html/admin-user
-  #   networks:
-  #     - foodshop-network
+  # Admin 管理后台应用
+  admin-app:
+    build:
+      context: ../foodshop-admin
+      dockerfile: Dockerfile
+    container_name: foodshop-admin-app
+    restart: always
+    volumes:
+      - admin_dist:/usr/share/nginx/html/admin-user
+    networks:
+      - foodshop-network
 
   # Nginx 反向代理
   nginx:
@@ -142,12 +162,12 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/default.d:/etc/nginx/default.d:ro
       - ./logs/nginx:/var/log/nginx
-      # - h5_dist:/usr/share/nginx/html/hi-user:ro
-      # - admin_dist:/usr/share/nginx/html/admin-user:ro
+      - h5_dist:/usr/share/nginx/html/hi-user:ro
+      - admin_dist:/usr/share/nginx/html/admin-user:ro
     depends_on:
-      - node-app
-      # - h5-app
-      # - admin-app
+      - node
+      - h5-app
+      - admin-app
     networks:
       - foodshop-network
     healthcheck:

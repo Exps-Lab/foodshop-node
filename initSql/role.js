@@ -9,11 +9,14 @@ const defaultRoleConf = [{
   role_name: "用户"
 }]
 
-module.exports = function initRole () {
-  RoleModel.find({ role: 1 }).then(res => {
-    if (!res.length) {
-      RoleModel.create(defaultRoleConf)
-    }
-  })
+module.exports = async function initRole () {
+  return RoleModel.find({ role: 1 })
+    .then(async res => {
+      if (!res.length) {
+        await RoleModel.create(defaultRoleConf)
+      }
+    })
+    .catch(err => {
+      console.error(chalk.red('初始化默认角色失败: ' + err))
+    })
 }
-

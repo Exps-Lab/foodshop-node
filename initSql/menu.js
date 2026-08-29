@@ -17,10 +17,14 @@ const defaultMenuConf = [{
 }]
 
 
-module.exports = function initMenu () {
-  MenuModel.find({ path: '/menu/index' }).then(res => {
-    if (!res.length) {
-      MenuModel.create(defaultMenuConf)
-    }
-  })
+module.exports = async function initMenu () {
+  return MenuModel.find({ path: '/menu/index' })
+    .then(async res => {
+      if (!res.length) {
+        await MenuModel.create(defaultMenuConf)
+      }
+    })
+    .catch(err => {
+      console.error(chalk.red('初始化默认菜单失败: ' + err))
+    })
 }

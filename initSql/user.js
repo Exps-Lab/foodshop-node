@@ -10,11 +10,14 @@ const administrator = {
   "avatar": ''
 }
 
-module.exports = function initUser () {
-  UserModel.find({ username: 'admin' }).then(res => {
-    if (!res.length) {
-      UserModel.create(administrator)
-    }
-  })
+module.exports = async function initUser () {
+  return UserModel.find({ username: 'admin' })
+    .then(async res => {
+      if (!res.length) {
+        await UserModel.create(administrator)
+      }
+    })
+    .catch(err => {
+      console.error(chalk.red('初始化默认超级管理员失败: ' + err))
+    })
 }
-

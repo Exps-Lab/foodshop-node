@@ -1,10 +1,9 @@
 module.exports = {
   apps: [{
     name: 'foodshop-node',
-    // script: '/home/www/exp-express/index.js',
-    // interpreter: "/root/.nvm/versions/node/v14.20.0/bin/node",
     script: './index.js',
     instances: 'max',
+    // 集群模式，开启多个进程
     exec_mode: 'cluster',
     autorestart: true,
     watch: false,

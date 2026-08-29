@@ -3,8 +3,14 @@ const config = require('../conf/index')
 const chalk = require('chalk')
 const dbURl = config.mongoose.url
 
+function connectDB() {
+  if (!mongoose.connection.readyState) {
+    return mongoose.connect(dbURl)
+  }
+  return Promise.resolve()
+}
 
-mongoose.connect(dbURl);
+connectDB()
 
 const db = mongoose.connection;
 
@@ -12,7 +18,6 @@ db.once('open' ,() => {
   console.log(
     chalk.green('连接数据库成功')
   );
-  initSql()
 })
 
 db.on('error', function(error) {
@@ -33,10 +38,4 @@ db.on('close', function() {
   });
 });
 
-// 初始化数据
-function initSql () {
-  const init = require('../initSql/index')
-  init()
-}
-
-module.exports = db
+module.exports = { db, connectDB }

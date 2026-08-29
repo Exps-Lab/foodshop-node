@@ -1,4 +1,4 @@
-const DB = require('../../mongoDB/index')
+const { db } = require('../../mongoDB/index')
 const mongoose = require('mongoose')
 let AutoIncModel = null
 
@@ -7,7 +7,7 @@ initTransModel();
 // 创建一个collection存储自增的字段
 function initTransModel () {
   try {
-    AutoIncModel = DB.model('autoInc');
+    AutoIncModel = db.model('autoInc');
   } catch (err) {
     if (err.name === 'MissingSchemaError') {
       // Create new counter schema.
@@ -21,7 +21,7 @@ function initTransModel () {
       AutoIncSchema.index({ field: 1, model: 1 }, { unique: true, required: true, index: -1 });
 
       // Create model using new schema.
-      AutoIncModel = DB.model('autoInc', AutoIncSchema, 'autoInc');
+      AutoIncModel = db.model('autoInc', AutoIncSchema, 'autoInc');
     }
     else
       throw err;
@@ -44,7 +44,7 @@ function autoEnhanceIndexPlugin (schema, options) {
     incBy: options.incBy || 1
   }
 
-  // // 定义schema中要自增的字段
+  // 定义schema中要自增的字段
   const temp = {};
   temp[settings.field] = {
     type: Number,
@@ -53,19 +53,12 @@ function autoEnhanceIndexPlugin (schema, options) {
   };
   schema.add(temp);
 
-  AutoIncModel.findOne({
-    model: settings.model,
-    field: settings.field
-  }).then(data => {
-    if (!data) {
-      // If no counter exists then create one and save it.
-      AutoIncModel.create({
-        model: settings.model,
-        field: settings.field,
-        count: settings.start - settings.incBy
-      });
-    }
-  });
+  // 初始化自增字段 upsert保证唯一性
+  AutoIncModel.findOneAndUpdate(
+    { model: settings.model, field: settings.field },
+    { $setOnInsert: { count: settings.start - settings.incBy } },
+    { upsert: true, new: true }
+  ).catch(() => {});
 
   schema.pre('save', function(next) {
     if (this[settings.field] === undefined) {
@@ -85,4 +78,3 @@ function autoEnhanceIndexPlugin (schema, options) {
 }
 
 module.exports = exports = autoEnhanceIndexPlugin;
-
