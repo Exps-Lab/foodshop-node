@@ -65,12 +65,45 @@ create_directories() {
     mkdir -p logs/web logs/app logs/db logs/pm2 logs/nginx
 }
 
+# 设置平台参数
+# 用法: set_platform <amd64|arm64>
+set_platform() {
+    local platform_input=${1:-amd64}
+
+    case "$platform_input" in
+        amd64|x86_64|x64)
+            export PLATFORM="linux/amd64"
+            export PLATFORM_TAG="amd64"
+            ;;
+        arm64|aarch64|arm)
+            export PLATFORM="linux/arm64"
+            export PLATFORM_TAG="arm64"
+            ;;
+        *)
+            print_error "不支持的平台: $platform_input"
+            print_error "支持的平台: amd64, arm64"
+            exit 1
+            ;;
+    esac
+
+    print_info "目标平台: $PLATFORM (镜像标签: $PLATFORM_TAG)"
+}
+
 # 构建镜像
+# 用法: build_images [amd64|arm64]
 build_images() {
+    local target_platform=${1:-amd64}
+
+    set_platform "$target_platform"
+
     print_info "开始构建 Docker 镜像..."
     $COMPOSE_CMD build --no-cache
     if [ $? -eq 0 ]; then
         print_info "镜像构建成功"
+        print_info "镜像列表:"
+        echo "  - ${DOCKER_USER:-zoroers}/foodshop-${PLATFORM_TAG}"
+        echo "  - ${DOCKER_USER:-zoroers}/foodshop-h5-${PLATFORM_TAG}"
+        echo "  - ${DOCKER_USER:-zoroers}/foodshop-admin-${PLATFORM_TAG}"
     else
         print_error "镜像构建失败"
         exit 1
@@ -146,7 +179,7 @@ show_menu() {
     echo "  Foodshop Node Docker 部署工具  "
     echo "================================"
     echo "1. 完整部署（构建 + 启动）"
-    echo "2. 仅构建镜像"
+    echo "2. 构建镜像（选择平台）"
     echo "3. 仅启动服务"
     echo "4. 查看服务状态"
     echo "5. 查看服务日志"
@@ -159,25 +192,43 @@ show_menu() {
 }
 
 # 主程序
+# 交互式选择平台
+prompt_platform() {
+    echo "" >&2
+    echo "请选择目标平台：" >&2
+    echo "  1) amd64 (x86_64)" >&2
+    echo "  2) arm64 (aarch64 / Apple Silicon)" >&2
+    read -p "请选择 [1-2，默认 1]: " platform_choice
+    case "${platform_choice:-1}" in
+        1|amd64|x86_64) echo "amd64" ;;
+        2|arm64|aarch64|arm) echo "arm64" ;;
+        *) print_error "无效选择，使用默认 amd64" >&2; echo "amd64" ;;
+    esac
+}
+
 main() {
     check_docker
     check_env
     create_directories
-    
+
     while true; do
         show_menu
         read -p "请选择操作 [0-8]: " choice
-        
+
         case $choice in
             1)
-                build_images
+                platform=$(prompt_platform)
+                build_images "$platform"
                 start_services
                 wait_for_services
                 ;;
             2)
-                build_images
+                platform=$(prompt_platform)
+                build_images "$platform"
                 ;;
             3)
+                platform=$(prompt_platform)
+                set_platform "$platform"
                 start_services
                 wait_for_services
                 ;;
@@ -204,28 +255,55 @@ main() {
                 print_error "无效选择，请重新输入"
                 ;;
         esac
-        
+
         echo ""
         read -p "按回车键继续..."
     done
 }
 
 # 支持命令行参数
-if [ "$1" = "start" ]; then
-    check_docker
-    check_env
-    create_directories
-    build_images
-    start_services
-    wait_for_services
-elif [ "$1" = "stop" ]; then
-    stop_services
-elif [ "$1" = "restart" ]; then
-    restart_services
-elif [ "$1" = "logs" ]; then
-    view_logs
-elif [ "$1" = "status" ]; then
-    $COMPOSE_CMD ps
-else
-    main
-fi
+# 用法：
+#   ./deploy.sh start [amd64|arm64]   完整部署
+#   ./deploy.sh build [amd64|arm64]   仅构建镜像
+#   ./deploy.sh stop                  停止服务
+#   ./deploy.sh restart               重启服务
+#   ./deploy.sh logs                  查看日志
+#   ./deploy.sh status                查看状态
+case "$1" in
+    start)
+        check_docker
+        check_env
+        create_directories
+        platform=${2:-amd64}
+        build_images "$platform"
+        start_services
+        wait_for_services
+        ;;
+    build)
+        check_docker
+        check_env
+        create_directories
+        platform=${2:-amd64}
+        build_images "$platform"
+        ;;
+    stop)
+        stop_services
+        ;;
+    restart)
+        restart_services
+        ;;
+    logs)
+        view_logs
+        ;;
+    status)
+        $COMPOSE_CMD ps
+        ;;
+    "")
+        main
+        ;;
+    *)
+        print_error "未知命令: $1"
+        echo "可用命令: start|build [amd64|arm64], stop, restart, logs, status"
+        exit 1
+        ;;
+esac

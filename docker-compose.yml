@@ -69,7 +69,8 @@ services:
 
   # 数据库初始化服务（一次性执行）
   node-init:
-    image: ${DOCKER_USER}/foodshop
+    image: ${DOCKER_USER}/foodshop-${PLATFORM_TAG:-amd64}
+    platform: ${PLATFORM:-linux/amd64}
     container_name: foodshop-init
     env_file:
       - .env
@@ -86,10 +87,13 @@ services:
 
   # Node.js 应用服务
   node:
-    image: ${DOCKER_USER}/foodshop
+    image: ${DOCKER_USER}/foodshop-${PLATFORM_TAG:-amd64}
+    platform: ${PLATFORM:-linux/amd64}
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - ${PLATFORM:-linux/amd64}
     container_name: foodshop
     restart: always
     env_file:
@@ -129,9 +133,13 @@ services:
 
   # H5 前端应用
   h5-app:
+    image: ${DOCKER_USER}/foodshop-h5-${PLATFORM_TAG:-amd64}
+    platform: ${PLATFORM:-linux/amd64}
     build:
       context: ../foodshop-h5
       dockerfile: Dockerfile
+      platforms:
+        - ${PLATFORM:-linux/amd64}
     container_name: foodshop-h5-app
     restart: always
     volumes:
@@ -141,9 +149,13 @@ services:
 
   # Admin 管理后台应用
   admin-app:
+    image: ${DOCKER_USER}/foodshop-admin-${PLATFORM_TAG:-amd64}
+    platform: ${PLATFORM:-linux/amd64}
     build:
       context: ../foodshop-admin
       dockerfile: Dockerfile
+      platforms:
+        - ${PLATFORM:-linux/amd64}
     container_name: foodshop-admin-app
     restart: always
     volumes:
