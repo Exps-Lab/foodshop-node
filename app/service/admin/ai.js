@@ -3,9 +3,9 @@ const { Ollama } = require('ollama')
 
 class AiService {
   constructor () {
-    this.ollamaHost = process.env.OLLAMA_HOST || 'http://127.0.0.1:11434'
-    this.defaultModel = process.env.OLLAMA_MODEL || 'gpt-oss:20b'
-    this.requestTimeout = Number(process.env.OLLAMA_TIMEOUT || 20000)
+    this.ollamaHost = process.env.OLLAMA_HOST || 'http://ollama:11434'
+    this.defaultModel = process.env.OLLAMA_MODEL || 'qwen3:0.6b'
+    this.requestTimeout = Number(process.env.OLLAMA_TIMEOUT || 180000)
     this.keepAlive = process.env.OLLAMA_KEEP_ALIVE || '5m'
   }
 
@@ -34,6 +34,7 @@ class AiService {
   pickModel (modelList = []) {
     const preferModels = [...new Set([
       this.defaultModel,
+      'qwen3:0.6b',
       'gpt-oss:20b'
     ].filter(Boolean))]
 
@@ -99,14 +100,16 @@ class AiService {
         messages: this.buildMessages(keyword),
         stream: false,
         keep_alive: this.keepAlive,
-        think: 'low',
         options: {
           temperature: 0.7,
           num_predict: 180
         }
       })
 
-      return this.cleanDescription(response?.message?.content)
+      console.log('AI Response:', JSON.stringify(response?.message, null, 2))
+
+      const content = response?.message?.content || response?.message?.thinking || ''
+      return this.cleanDescription(content)
     } finally {
       clearTimeout(timeoutId)
     }
@@ -172,7 +175,7 @@ class AiService {
         messages: this.buildMessages(keyword),
         stream: true,
         keep_alive: this.keepAlive,
-        think: 'low',
+        // think: 'low',
         options: {
           temperature: 0.7,
           num_predict: 180
